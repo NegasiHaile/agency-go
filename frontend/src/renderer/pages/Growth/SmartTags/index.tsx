@@ -15,14 +15,15 @@ function SmartTags() {
   return (
     <>
     <Wrapper>
-
       <SearchUsers />
-      <Box marginLeft="32px" marginRight="16px" marginTop="16px" height='100px'>
+      <Box marginLeft="16px" height="75vh" sx={{overflowY:"scroll"}}>
         {/* <UpdateButtons /> */}
         <FilterTag />
+        <Box sx={{display:'flex',flexDirection:"column",gap:'10px'}}>
         <FilterGrid />
         {/* <TriggerButtons /> */}
        <SmartBar />
+       </Box>
       </Box>
     </Wrapper>
     </>

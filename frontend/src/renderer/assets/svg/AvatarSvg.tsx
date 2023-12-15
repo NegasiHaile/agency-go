@@ -1,10 +1,15 @@
 import React from 'react';
 
-function AvatarSvg() {
+interface AvatarProps {
+  width?: string;
+  height?: string;
+}
+
+function AvatarSvg({ width, height }: AvatarProps) {
   return (
     <svg
-      width="32"
-      height="32"
+      width={width || '32'}
+      height={height || '32'}
       viewBox="0 0 32 32"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

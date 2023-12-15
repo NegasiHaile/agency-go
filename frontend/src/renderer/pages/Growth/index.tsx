@@ -27,8 +27,11 @@ export default function Growth() {
   return (
     <Dashboard>
       <section className={styles.wrapper}>
-        <PageTopbar>
+          <Box className={styles.topbarwrapper}  sx={{
+        backgroundColor: isDarkTheme ? '#292929' : '#EAF1FF',
+      }}>
           <Stack
+          sx={{position:'sticky',left:'0'}}
             alignItems="center"
             direction="row"
             marginBottom="20px"
@@ -38,7 +41,7 @@ export default function Growth() {
             <PageTopbar.HeaderText>Growth</PageTopbar.HeaderText>
             {isScriptsPage && <AddScriptsBtns />}
           </Stack>
-          <Stack flexDirection="row" sx={{ position: 'absolute', bottom: 0 }}>
+          <Stack flexDirection="row" sx={{  }}>
             {links.map(({ link, text }) => (
               <PageTopbar.TabButton
                 key={text}
@@ -50,12 +53,12 @@ export default function Growth() {
               />
             ))}
           </Stack>
-        </PageTopbar>
+          </Box>
         <Box
           sx={{
             display: 'grid',
             gridTemplateColumns: 'minmax(min-content, 380px) 1fr',
-            height: '100%',
+            height: '88vh',
             backgroundColor: isDarkTheme ? '#000' : '#fff',
           }}
         >

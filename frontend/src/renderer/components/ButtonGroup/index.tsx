@@ -3,7 +3,7 @@ import { Box, Stack, Typography, useTheme } from '@mui/material';
 interface $Props {
   tabButton: any;
   setActiveButton?: any;
-  activeButton?: number;
+  activeButton?: number | string;
 }
 
 export default function ButtonGroup({

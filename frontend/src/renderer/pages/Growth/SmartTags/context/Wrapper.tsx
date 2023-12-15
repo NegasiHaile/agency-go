@@ -3,7 +3,7 @@ import { MyContext } from './context'
 const Wrapper = ({children} :any) => {
 
 
-const [fromdata,setFormData]=useState<any>(null)
+const [fromData,setFormData]=useState<any>(null)
 
 const [tags,setTags]=useState<any>(null)
   const getTags =()=>{
@@ -11,7 +11,7 @@ const [tags,setTags]=useState<any>(null)
     setTags(localStorage.getItem("Tags"))
   }
   return (
-   <MyContext.Provider value={{getTags,setFormData,fromdata,tags}}>
+   <MyContext.Provider value={{getTags,setFormData,fromData,tags}}>
       {children}
    </MyContext.Provider>
   )

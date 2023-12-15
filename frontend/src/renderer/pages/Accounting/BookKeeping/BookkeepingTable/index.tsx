@@ -17,6 +17,7 @@ import { useEffect, useState } from 'react';
 import EditSvg from 'renderer/assets/svg/downloadSvg';
 import theme from 'renderer/styles/muiTheme';
 import AddLeder from './AddLeder';
+import { API_URL } from 'config';
 
 const payoutData = [
   {
@@ -46,7 +47,7 @@ const[isOpen,setOpen]=useState<any>(false)
       
     };
     try {
-      const response = await fetch('http://localhost:3000/invoicing', options);
+      const response = await fetch(`${API_URL}/invoicing`, options);
       if (response.ok) {
         const data = await response.json();
         setAllInvoice(data?.data)

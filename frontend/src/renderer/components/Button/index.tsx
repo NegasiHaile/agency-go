@@ -6,6 +6,7 @@ import styles from './styles.module.css';
 interface $Props extends ButtonHTMLAttributes<HTMLButtonElement> {
   color?: 'primary';
   variant?: 'contained' | 'text' | 'outlined';
+  size?: 'medium' | 'small';
 }
 
 export default function ButtonEle({
@@ -16,6 +17,7 @@ export default function ButtonEle({
   onClick,
   className,
   disabled,
+  size,
 }: $Props) {
   const getBackgroundColor = (): string =>
     ({
@@ -26,6 +28,7 @@ export default function ButtonEle({
     // eslint-disable-next-line react/button-has-type
     <Button
       variant={variant}
+      size={size}
       type={type}
       onClick={onClick}
       disabled={disabled}

@@ -1,4 +1,5 @@
 import { ReactNode, createContext, useEffect, useState } from 'react';
+import useQuery from 'renderer/hooks/useQuery';
 import fetchReq from 'utils/fetch';
 
 interface AuthContextType {
@@ -6,6 +7,7 @@ interface AuthContextType {
   login: () => void;
   logout: () => void;
   userData: any;
+  userDetail: () => void;
 }
 
 export const AuthContext = createContext<AuthContextType>({
@@ -13,6 +15,7 @@ export const AuthContext = createContext<AuthContextType>({
   login: () => {},
   logout: () => {},
   userData: {},
+  userDetail: () => {},
 });
 
 interface $Props {
@@ -22,6 +25,15 @@ interface $Props {
 export default function AuthProvider({ children }: $Props) {
   const [isLogin, setIsLogin] = useState(false);
   const [userData, setUserData] = useState({});
+  const authQuery = useQuery({
+    key: 'verify',
+    onSuccess() {
+      setIsLogin(true);
+    },
+    onError() {
+      setIsLogin(false);
+    }
+  })
   const token = localStorage.getItem('Authorization');
 
   useEffect(() => {
@@ -46,15 +58,18 @@ export default function AuthProvider({ children }: $Props) {
       .then((res) => {
         if (res.message == 'verify') {
           setUserData(res.data);
+          setIsLogin(true);
         }
       })
       .catch((err) => {
         console.log('Error occured: ', err);
+        setIsLogin(false);
       });
   };
 
   const login = () => {
-    setIsLogin(true);
+    authQuery.refetch();
+    // setIsLogin(true);
   };
 
   const logout = () => {
@@ -81,11 +96,20 @@ export default function AuthProvider({ children }: $Props) {
       })
       .catch((err) => {
         console.log('Error occured: ', err);
+        //Clear auth token, and set to login screen as fallback;
+        localStorage.removeItem('Authorization');
+        localStorage.removeItem('AgencyId');
+        localStorage.removeItem('UserId');
+        localStorage.removeItem('TwilioToken');
+        setIsLogin(false);
+        setUserData({});
       });
   };
 
   return (
-    <AuthContext.Provider value={{ isLogin, login, logout, userData }}>
+    <AuthContext.Provider
+      value={{ isLogin, login, logout, userData, userDetail }}
+    >
       {children}
     </AuthContext.Provider>
   );

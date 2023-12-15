@@ -41,13 +41,11 @@ import {
   ListObjectsCommand,
   GetObjectCommand,
   DeleteObjectCommand,
-} from '@aws-sdk/client-s3';
-
-import {
   S3Client,
   PutObjectCommand,
   ListObjectsV2Command,
 } from '@aws-sdk/client-s3';
+
 import DeleteConfirmationDialog from './CreateFolderModal/confirmDelete';
 import MediaTypeItem from './MediaTypeItem';
 import axios from 'axios';
@@ -56,6 +54,12 @@ import ContentHubStorageBar from 'renderer/components/Progress';
 import GridSelectionItem from 'renderer/components/GridSelection';
 import useQuery from 'renderer/hooks/useQuery';
 import RegenerateModal from './RegenerateModal';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import {
+  deleteContentData,
+  getContentData,
+  updatePresignedUrl,
+} from 'services/content';
 
 export default function ContentHub() {
   const [search, setSearch] = useState('');
@@ -79,6 +83,9 @@ export default function ContentHub() {
   const [maxSizeLimit, setMaxSizeLimit] = useState(25);
   const [sizeUsed, setSizeUsed] = useState(0);
   const [sizeUsedUnit, setSizeUsedUnit] = useState('B');
+  const [selectedStatus, setSelectedStatus] = useState('Filter');
+  const [signedImageList, setSignedImageList] = useState([]);
+  const [presignedLink, setPresignedLink] = useState('');
 
   // Function to toggle image selection
   const handleToggleImageSelection = (imageKey: string) => {
@@ -117,6 +124,8 @@ export default function ContentHub() {
     },
   });
 
+  console.log('data', data);
+
   const createNewFolderInS3 = async (folderName) => {
     const folderWithManagerId = `${selectedCreator}/${folderName}/`;
     console.log('folder', folderWithManagerId);
@@ -135,7 +144,6 @@ export default function ContentHub() {
   };
 
   const deleteFolderFromS3 = async (key) => {
-    console.log('key', key);
     try {
       const listObjectsCommand = {
         Bucket: 'dropbox-demo',
@@ -154,7 +162,7 @@ export default function ContentHub() {
 
       await s3Client.send(new DeleteObjectsCommand(deleteObjectsCommand));
       console.log('Folder deleted successfully.');
-      // setRows([])
+      setRows([]);
       await getFolderList();
     } catch (error) {
       console.error('Error deleting folder:', error);
@@ -174,6 +182,8 @@ export default function ContentHub() {
         await s3Client.send(new DeleteObjectCommand(params));
         console.log(`Image '${deletingImage}' deleted from S3 bucket.`);
 
+        // delete api
+        await deleteContentData({ type: 'keys', keyList: [deletingImage] });
         // Remove the deleted image from the state
         setImages((prevImages) =>
           prevImages.filter((image) => image !== deletingImage)
@@ -199,9 +209,8 @@ export default function ContentHub() {
     showDeleteConfirmationDialog();
   };
 
-   const theme = useTheme();
-   const isDarkTheme = theme.palette.mode === 'dark';
-
+  const theme = useTheme();
+  const isDarkTheme = theme.palette.mode === 'dark';
 
   const columns: GridColDef[] = [
     {
@@ -329,18 +338,16 @@ export default function ContentHub() {
     // Update the inFolderView state
     setInFolderView(!showGrid);
   }, [showGrid]);
-
   useEffect(() => {
     console.log('manager', selectedCreator);
     console.log('data.data', data?.data);
 
     getFolderList().then((r) => console.log(r));
   }, [selectedCreator]);
-
   useEffect(() => {
     // Select the first manager when the component mounts
-    if (!selectedCreator && data?.data.length > 0) {
-      handleManagerSelection(data.data[0]._id);
+    if (!selectedCreator && data?.data?.creators.length > 0) {
+      handleManagerSelection(data.data.creators[0]._id);
     }
   }, [data]);
 
@@ -493,24 +500,29 @@ export default function ContentHub() {
     window.electron.ipcRenderer.sendMessage('download', { url: imageKey });
   };
   const getImagesInFolder = async (key: string) => {
-    const params = {
-      Bucket: 'dropbox-demo', // Replace with your S3 bucket name
-      Prefix: `${selectedCreator}/` + key + '/', // Use an empty prefix to list objects from the root of the bucket
-    };
-
     try {
+      const params = {
+        Bucket: 'dropbox-demo', // Replace with your S3 bucket name
+        Prefix: `${selectedCreator}/` + key + '/', // Use an empty prefix to list objects from the root of the bucket
+      };
       let folder = await s3Client.send(new ListObjectsV2Command(params));
-      //console.log(folder.Contents);
       const modifiedData = folder.Contents.slice(1); // Removing the first item
+
+      const response = await getContentData(selectedCreator, key);
+      setSignedImageList(response.data.data);
+
+      console.log('modifiedData', modifiedData);
       const keyList = modifiedData.map((item: { Key: any }) => item.Key);
       setImages(keyList);
-      console.log(keyList);
     } catch (error) {
-      console.error('Error creating folder in S3:', error);
+      console.log('Error', error);
     }
   };
+
   const handleRowClick = (params: { row: any }, event: any) => {
     console.log(params.row.foldername);
+
+    // change to s3 delete below
     getImagesInFolder(params.row.foldername);
 
     toggleGrid();
@@ -528,9 +540,13 @@ export default function ContentHub() {
     const handleMenuClose = () => {
       setAnchorEl(null);
     };
-    const handleDeleteFolder = () => {
+    const handleDeleteFolder = async () => {
       handleMenuClose();
       deleteFolderFromS3(selectedCreator + '/' + row.row.foldername);
+      await deleteContentData({
+        type: 'folder',
+        folderName: row.row.foldername,
+      });
     };
 
     const handleDownloadFolder = () => {
@@ -542,18 +558,20 @@ export default function ContentHub() {
     return (
       <div>
         <IconButton onClick={handleMenuClick}>
-          <MoreVert  />
+          <MoreVert />
         </IconButton>
         <Menu
           anchorEl={anchorEl}
           open={Boolean(anchorEl)}
           onClose={handleMenuClose}
-          sx={{
-            // '& .MuiPaper-root': {
-            //   backgroundColor: '#1a1a1a',
-            //   color: 'white',
-            // },
-          }}
+          sx={
+            {
+              // '& .MuiPaper-root': {
+              //   backgroundColor: '#1a1a1a',
+              //   color: 'white',
+              // },
+            }
+          }
         >
           <MenuItem onClick={handleDownloadFolder}>
             <DownloadIcon />
@@ -580,7 +598,7 @@ export default function ContentHub() {
     setOpen(data);
   };
   const RegeneratedialogOpenClose = (data: boolean) => {
-    setRegenerateModalOpen(data);
+    createPresignedUrl(data);
   };
   const dialogUploadOpenClose = (data: boolean) => {
     setUploadOpen(data);
@@ -599,8 +617,21 @@ export default function ContentHub() {
   const handleUploadOpen = () => setUploadOpen(true);
   const handleRegeneratedialogOpen = () => setRegenerateModalOpen(true);
 
-  const [selectedStatus, setSelectedStatus] = useState('Filter');
+  // S3 functions
 
+  // create presignde url
+  const createPresignedUrl = async (key: string) => {
+    const expiresInSeconds = 7 * 24 * 60 * 60; // 7 days is the max
+    const command = new GetObjectCommand({
+      Bucket: 'dropbox-demo',
+      Key: key,
+    });
+    const url = await getSignedUrl(s3Client, command, {
+      expiresIn: expiresInSeconds,
+    });
+    setPresignedLink(url);
+    setRegenerateModalOpen(true);
+  };
   // Function to delete selected images
   const deleteSelectedImages = async () => {
     setShowDownloadButton(false); // Hide the download button
@@ -609,7 +640,6 @@ export default function ContentHub() {
       // Create a list of images to delete and a list of images to keep
       const imagesToDelete = [];
       let updatedImages = [];
-
       for (const imageKey of selectedImages) {
         // Specify the S3 object to delete
         const deleteObjectParams = {
@@ -623,7 +653,7 @@ export default function ContentHub() {
         // Add the deleted image to the list of images to delete
         imagesToDelete.push(imageKey);
       }
-
+      await deleteContentData({ type: 'keys', keyList: imagesToDelete });
       // Remove the deleted images from the state
       updatedImages = images.filter((image) => !imagesToDelete.includes(image));
 
@@ -639,7 +669,6 @@ export default function ContentHub() {
       // Handle the error, e.g., show an error message to the user.
     }
   };
-
   // Function to download selected images
   const downloadSelectedImages = async () => {
     setShowDownloadButton(false); // Hide the download button
@@ -722,13 +751,42 @@ export default function ContentHub() {
     return null;
   };
 
+  const getSignedUrlFromDb = () => {
+    const signedUrl = signedImageList.filter(
+      (e) => e.imageKey === selectedImages[0]
+    );
+
+    setPresignedLink(signedUrl[0].presignUrl);
+    setRegenerateModalOpen(!isRegenerateModalOpen);
+  };
+
+  const updateLink = async () => {
+    const expiresInSeconds = 7 * 24 * 60 * 60; // 7 days is the max
+    const command = new GetObjectCommand({
+      Bucket: 'dropbox-demo',
+      Key: selectedImages[0],
+    });
+    const url = await getSignedUrl(s3Client, command, {
+      expiresIn: expiresInSeconds,
+    });
+
+    setPresignedLink(url);
+    try {
+      const payload = {
+        presignUrl: url,
+        imageKey: selectedImages[0],
+      };
+      await updatePresignedUrl(payload);
+    } catch (err) {
+      console.log('Err', err);
+    }
+  };
+
   return (
     <Dashboard>
       <section className={styles.wrapper}>
         <PageTopbar>
-          <PageTopbar.HeaderText  >
-            {localisation.content}
-          </PageTopbar.HeaderText>
+          <PageTopbar.HeaderText>{localisation.content}</PageTopbar.HeaderText>
           <Box
             gap={'10px'}
             marginRight={'10px'}
@@ -816,7 +874,8 @@ export default function ContentHub() {
                     variant="contained"
                     sx={{ color: '#fff', textTransform: 'capitalize' }}
                     startIcon={<InsertLinkSharpIcon />}
-                    onClick={handleRegeneratedialogOpen}
+                    onClick={getSignedUrlFromDb}
+                    disabled={!(selectedImages.length == 1)}
                   >
                     Regenerate link
                   </Button>
@@ -851,9 +910,11 @@ export default function ContentHub() {
               </div>
 
               {data?.data &&
-                data.data.map((c) => (
+                data.data.creators.map((c) => (
                   <UserCardWImage
                     key={c._id}
+                    id={c.id}
+                    autoRelink={false}
                     name={c.creatorName}
                     profileImage={ProfilePic}
                     notificationCount={0}
@@ -881,7 +942,7 @@ export default function ContentHub() {
               justifyContent={'space-between'}
               alignItems={'center'}
             >
-              <Typography fontSize="22px" paddingLeft={'15px'} >
+              <Typography fontSize="22px" paddingLeft={'15px'}>
                 {headerText}
               </Typography>
               {renderActions()}
@@ -950,9 +1011,12 @@ export default function ContentHub() {
 
           {isRegenerateModalOpen && (
             <RegenerateModal
-              link={'qett4er52322334323.....'}
+              link={presignedLink}
               open={isRegenerateModalOpen}
-              dialogOpenClose={RegeneratedialogOpenClose}
+              dialogOpenClose={() =>
+                setRegenerateModalOpen(!isRegenerateModalOpen)
+              }
+              updateLink={updateLink}
             />
           )}
           {isCreateFolderModalOpen && (
@@ -971,6 +1035,7 @@ export default function ContentHub() {
               open={isUploadFolderModalOpen}
               dialogOpenClose={dialogUploadOpenClose}
               getImagesInFolder={getImagesInFolder}
+              creatorData={data.data.creators}
             />
           )}
         </Box>

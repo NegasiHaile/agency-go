@@ -19,7 +19,7 @@ const UserSchema: Schema<User> = new Schema({
   },
   status: {
     type: Boolean,
-    default: false,
+    default: true,
   },
   date: {
     tyoe: String,
@@ -29,16 +29,15 @@ const UserSchema: Schema<User> = new Schema({
     required: true,
     unique: true,
   },
-  agencyPer:{
-    type:String,
+  agencyPer: {
+    type: String,
   },
-  currentModalBalance:{
-    type:Number,
-    required:false,
+  currentModelBalance: {
+    type: Number,
   },
   isVerified: {
     type: Boolean,
-    default: false,
+    default: true,
   },
   agencyId: {
     type: Schema.Types.ObjectId,
@@ -50,7 +49,7 @@ const UserSchema: Schema<User> = new Schema({
   },
   password: {
     type: String,
-    required: true,
+    required: false,
     validate: {
       validator: (value: string) => value.length > 0,
       message: 'Password field is required',
@@ -62,7 +61,7 @@ const UserSchema: Schema<User> = new Schema({
   },
   role: {
     type: String,
-    enum: ['admin', 'chatter', 'manager'],
+    enum: ['admin', 'employee', 'manager'],
   },
   twilioUserId: {
     type: String,

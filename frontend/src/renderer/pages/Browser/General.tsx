@@ -10,22 +10,15 @@ import {
   ToggleButton,
   ToggleButtonGroup,
   Typography,
+  FormLabel,
   useTheme,
 } from '@mui/material';
-import Overlay from 'renderer/components/Settings/Wallet/Common/Modal';
-import styles from 'renderer/components/Settings/Wallet/Common/Modal/styles.module.css';
 import {
   DropdownWithLabel,
   InputWithLabel,
-  ModalFooter,
 } from 'renderer/components/Settings/Wallet/Common/ModalComponents';
-import { Stack } from '@mui/system';
-import fetchReq from 'utils/fetch';
-import useFormEmployee from '../ManageEmployees/hooks/useForm';
-import Dropzone from 'react-dropzone';
-import BackupOutlinedIcon from '@mui/icons-material/BackupOutlined';
-import { roleList } from '../ManageEmployees/constant';
-import NewProfile from './NewProfile';
+import { antyBrowserProfileStatusList } from '../ManageEmployees/constant';
+import GoogleMaps from './GoogleMaps';
 
 interface $props {
   open: boolean;
@@ -34,8 +27,8 @@ interface $props {
   refetch: () => void;
   onFormSubmit: (data: any) => void;
   handleCreate: (data: any) => void;
-  dataRef: (data: any) => void;
   handleFormSubmitRef: any;
+  increaseFetchIndex: () => any;
 }
 
 const General = ({
@@ -45,76 +38,61 @@ const General = ({
   refetch,
   onFormSubmit,
   handleCreate,
-  dataRef,
   handleFormSubmitRef,
+  increaseFetchIndex,
 }: $props) => {
-  const [alignment, setAlignment] = React.useState('web');
+  const [selectedPlatform, setSelectedPlatform] = React.useState('Win32');
+  const [locationPreference, setLocationPreference] = React.useState('default');
+  const [locationCoords, setLocationCoords] = useState(null);
   const [alignment2, setAlignment2] = React.useState('web');
-  const [alignment3, setAlignment3] = React.useState('web');
+  const [selectedproxy, setselectedproxy] = React.useState('no-proxy');
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
-  const [alignment4, setAlignment4] = React.useState('web');
-  const [alignment5, setAlignment5] = React.useState('web');
-  const [alignment6, setAlignment6] = React.useState('web');
-  const [alignment7, setAlignment7] = React.useState('web');
-  const [alignment8, setAlignment8] = React.useState('web');
-  const [alignment9, setAlignment9] = React.useState('web');
-  const [alignment10, setAlignment10] = React.useState('web');
-  const [alignment11, setAlignment11] = React.useState('web');
-  const [alignment12, setAlignment12] = React.useState('web');
-  const [alignment13, setAlignment13] = React.useState('web');
-  const [alignment14, setAlignment14] = React.useState('web');
-  const [alignment15, setAlignment15] = React.useState('web');
+  const [selectedProxyProtocol, setSelectedProxyProtocol] =
+    React.useState('http');
   const [newData, setNewData] = useState({
     name: '',
-    status: '',
-    tags: '',
+    status: 'ready',
+    platform: selectedPlatform,
+    tags: [],
     proxy: '',
-    changeIPURL: '',
-    proxyName: '',
   });
-  const [errors, setErrors] = useState({
-    name: '',
-    status: '',
-  });
+  const [errors, setErrors] = useState({});
 
-  useEffect(() => {
-    if (newData.name) {
-      dataRef(newData);
-    }
-  }, [newData]);
+  const validateProxyString = (proxyUrl) => {
+    const proxyPattern = /^((.*?):(\d+))(@(.+?):(.+))?$/;
+    return proxyPattern.test(proxyUrl);
+  };
 
   const handleNameChange = (name: string, value: string) => {
     setNewData((prevData) => ({
       ...prevData,
-      [name]: value,
+      name: value,
     }));
   };
 
   const handleProxyChange = (proxy: string, value: string) => {
     setNewData((prevData) => ({
       ...prevData,
-      [proxy]: value,
+      proxy: value,
     }));
   };
 
-  const handlechangeIPURLChange = (changeIPURL: any, value: any) => {
+  const handleTagsChange = (value: []) => {
     setNewData((prevData) => ({
       ...prevData,
-      [changeIPURL]: value,
+      tags: value,
     }));
   };
-
-  const handleTagsChange = (tags: any, value: any) => {
-    setNewData((prevData) => ({
-      ...prevData,
-      [tags]: value,
-    }));
-  };
-
   const handleproxyNameChange = (proxyName: any, value: any) => {
     setNewData((prevData) => ({
       ...prevData,
-      [proxyName]: value,
+      proxyName: value,
+    }));
+  };
+  const handleUserAgentChange = (userAgent: any, value: any) => {
+    setNewData((prevData) => ({
+      ...prevData,
+      userAgent: value,
     }));
   };
 
@@ -127,165 +105,127 @@ const General = ({
 
   const validateFields = () => {
     let isValid = true;
-    const newErrors = { ...errors };
+    const newErrors = {};
 
-    if (!newData.name.trim()) {
+    if (!newData.name) {
       newErrors.name = 'Name is required';
       isValid = false;
-    } else {
-      newErrors.name = '';
     }
 
-    if (!newData.status.trim()) {
-      newErrors.status = 'Status is required';
-      isValid = false;
-    } else {
-      newErrors.status = '';
+    if (selectedproxy === 'set-proxy') {
+      if (!newData.proxy) {
+        newErrors.proxy = 'Proxy url is not added';
+        isValid = false;
+      } else if (!validateProxyString(newData.proxy)) {
+        newErrors.proxy = 'Proxy url is not valid';
+        isValid = false;
+      }
     }
 
-    // Validate other fields similarly if needed
-
-    setErrors(newErrors);
+    setErrors(Object.assign(errors, newErrors));
     return isValid;
   };
 
-  const handleFormSubmit = (event) => {
-   // event.preventDefault(); // Prevents default form submission behavior
+  function parseProxyString(proxyString) {
+    const proxyPattern = /^((.*?):(\d+))(@(.+?):(.+))?$/;
+    const match = proxyString.match(proxyPattern);
+
+    if (!match) {
+      return false;
+    }
+
+    const result = {
+      host: match[2],
+      port: parseInt(match[3]),
+    };
+
+    if (match[5] && match[6]) {
+      result.username = match[5];
+      result.password = match[6];
+    }
+
+    return result;
+  }
+
+  const handleFormSubmit = async () => {
+    // event.preventDefault(); // Prevents default form submission behavior
 
     // Validate fields before submission
     const isValid = validateFields();
 
-    // Display form data in the console
-    console.log('Form Data:', newData);
+    function delay(delayInMilliseconds: number) {
+      return new Promise((resolve) => {
+        setTimeout(resolve, delayInMilliseconds);
+      });
+    }
 
-    // onFormSubmit(newData);
-    // Clear form data after submission (if needed)
-    setNewData({
-      name: '',
-      status: '',
-      tags: '',
-      proxy: '',
-      changeIPURL: '',
-      proxyName: '',
-    });
+    await delay(100);
+    console.log({ isValid, errors, newData });
+
+    if (!isValid) {
+      for (const key in errors) {
+        if (errors[key] !== '') {
+          alert(errors[key]);
+          break;
+        }
+      }
+      return;
+    }
+
+    await window.electron.ipcRenderer.invoke(
+      'anty-browser:create-profile',
+      Object.assign(newData, {
+        geolocation: locationCoords,
+        proxy: parseProxyString(newData.proxy),
+      })
+    );
+    increaseFetchIndex();
+    setOpen(false);
+
+    // // onFormSubmit(newData);
+    // // Clear form data after submission (if needed)
+    // setNewData({
+    //   name: '',
+    //   status: '',
+    //   tags: '',
+    //   proxy: '',
+    //   changeIPURL: '',
+    //   proxyName: '',
+    // });
     // handleCreate(newData);
   };
 
   handleFormSubmitRef.current = { handleFormSubmit: handleFormSubmit };
 
-  const handleChange = (
+  const handleOSChange = (
     event: React.MouseEvent<HTMLElement>,
-    newAlignment: string
+    platform: string
   ) => {
-    setAlignment(newAlignment);
+    setNewData((prevData) => ({
+      ...prevData,
+      platform: platform,
+    }));
+    setSelectedPlatform(platform);
   };
 
-  const handleChange1 = (
+  const handleProxySelect = (
     event: React.MouseEvent<HTMLElement>,
-    newAlignment: string
+    proxy: string
   ) => {
-    setAlignment2(newAlignment);
+    setselectedproxy(proxy);
   };
 
-  const handleChange2 = (
+  const handleProxyProtocolChange = (
     event: React.MouseEvent<HTMLElement>,
-    newAlignment: string
+    selectedProxyProtocol: string
   ) => {
-    setAlignment3(newAlignment);
+    setNewData((prevData) => ({
+      ...prevData,
+      proxyProtocol: selectedProxyProtocol,
+    }));
+    setSelectedProxyProtocol(selectedProxyProtocol);
   };
 
-  const handleChange3 = (
-    event: React.MouseEvent<HTMLElement>,
-    newAlignment: string
-  ) => {
-    setAlignment4(newAlignment);
-  };
-
-  const handleChange4 = (
-    event: React.MouseEvent<HTMLElement>,
-    newAlignment: string
-  ) => {
-    setAlignment5(newAlignment);
-  };
-
-  const handleChange5 = (
-    event: React.MouseEvent<HTMLElement>,
-    newAlignment: string
-  ) => {
-    setAlignment6(newAlignment);
-  };
-
-  const handleChange6 = (
-    event: React.MouseEvent<HTMLElement>,
-    newAlignment: string
-  ) => {
-    setAlignment7(newAlignment);
-  };
-
-  const handleChange7 = (
-    event: React.MouseEvent<HTMLElement>,
-    newAlignment: string
-  ) => {
-    setAlignment8(newAlignment);
-  };
-
-  const handleChange8 = (
-    event: React.MouseEvent<HTMLElement>,
-    newAlignment: string
-  ) => {
-    setAlignment9(newAlignment);
-  };
-
-  const handleChange9 = (
-    event: React.MouseEvent<HTMLElement>,
-    newAlignment: string
-  ) => {
-    setAlignment10(newAlignment);
-  };
-
-  const handleChange10 = (
-    event: React.MouseEvent<HTMLElement>,
-    newAlignment: string
-  ) => {
-    setAlignment11(newAlignment);
-  };
-
-  const handleChange11 = (
-    event: React.MouseEvent<HTMLElement>,
-    newAlignment: string
-  ) => {
-    setAlignment12(newAlignment);
-  };
-
-  const handleChange12 = (
-    event: React.MouseEvent<HTMLElement>,
-    newAlignment: string
-  ) => {
-    setAlignment13(newAlignment);
-  };
-
-  const handleChange13 = (
-    event: React.MouseEvent<HTMLElement>,
-    newAlignment: string
-  ) => {
-    setAlignment14(newAlignment);
-  };
-
-  const handleChange14 = (
-    event: React.MouseEvent<HTMLElement>,
-    newAlignment: string
-  ) => {
-    setAlignment15(newAlignment);
-  };
-
-  const onDrop = (acceptedFiles: File[]) => {
-    setSelectedFiles(acceptedFiles);
-    console.log('Selected Files:', acceptedFiles);
-  };
-
-  const handleFileSelect = (e: any) => {
-    setSelectedFiles(e.target.files[0]);
-  };
   const theme = useTheme();
   const isDarkTheme = theme.palette.mode === 'dark';
 
@@ -320,9 +260,7 @@ const General = ({
           >
             <DropdownWithLabel
               label="Status"
-              inputIdentifierName="status"
-              placeholder="status"
-              options={roleList}
+              options={antyBrowserProfileStatusList}
               handleOnChange={handleStatusChange}
             />
           </Box>
@@ -338,6 +276,9 @@ const General = ({
           }}
         >
           <Autocomplete
+            onChange={(event, newValue) => {
+              handleTagsChange(newValue, event);
+            }}
             sx={{ width: '100%' }}
             clearIcon={false}
             options={[]}
@@ -353,7 +294,6 @@ const General = ({
                 {...params}
                 InputLabelProps={{
                   shrink: false,
-                  onChange: { handleTagsChange },
                 }}
               />
             )}
@@ -370,53 +310,84 @@ const General = ({
         >
           <ToggleButtonGroup
             color="primary"
-            value={alignment}
+            value={selectedPlatform}
             exclusive
-            onChange={handleChange}
+            onChange={handleOSChange}
             aria-label="Platform"
+            style={{ alignItems: 'center' }}
+            size="small"
           >
-            <ToggleButton value="web">WINDOWS</ToggleButton>
-            <ToggleButton value="android">MACOS</ToggleButton>
-            <ToggleButton value="ios">LINUX</ToggleButton>
+            <FormLabel>Operating System: &nbsp;</FormLabel>
+            <ToggleButton value="Win32">WINDOWS</ToggleButton>
+            <ToggleButton value="MacIntel">MACOS</ToggleButton>
+            <ToggleButton value="Linux x86_64">LINUX</ToggleButton>
           </ToggleButtonGroup>
-          {/* <ToggleButtonGroup
-          color="primary"
-          value={alignment2}
-          exclusive
-          onChange={handleChange1}
-          aria-label="Platform"
-        >
-          <ToggleButton value="web">NONE</ToggleButton>
-          <ToggleButton value="android">FACEBOOK</ToggleButton>
-          <ToggleButton value="ios">GOOGLE</ToggleButton>
-        </ToggleButtonGroup> */}
+
           <ToggleButtonGroup
             color="primary"
-            value={alignment3}
+            value={locationPreference}
             exclusive
-            onChange={handleChange2}
-            aria-label="Platform"
+            onChange={(e, lp) => {
+              if (lp === 'default') {
+                setLocationCoords(null);
+              }
+              setLocationPreference(lp);
+            }}
+            aria-label="GeoLocation Preference"
+            style={{ alignItems: 'center' }}
+            size="small"
           >
-            <ToggleButton value="web">NO PROXY</ToggleButton>
-            <ToggleButton value="android">NEW PROXY</ToggleButton>
-            <ToggleButton value="ios">SAVED PROXIES</ToggleButton>
+            <FormLabel>Geolocation Preference: &nbsp;</FormLabel>
+            <ToggleButton value="default">Default</ToggleButton>
+            <ToggleButton value="custom">Custom</ToggleButton>
           </ToggleButtonGroup>
+
+          {locationPreference === 'custom' && (
+            <GoogleMaps
+              setLocationCoords={(payload) => {
+                if (locationPreference === 'custom') {
+                  setLocationCoords(payload);
+                }
+              }}
+            />
+          )}
+
           <ToggleButtonGroup
             color="primary"
-            value={alignment4}
+            value={selectedproxy}
             exclusive
-            onChange={handleChange3}
+            onChange={handleProxySelect}
             aria-label="Platform"
-            sx={{ height: '31px', borderRadius: '8px' }}
+            style={{ alignItems: 'center' }}
+            size="small"
           >
-            <ToggleButton value="web">HTTP</ToggleButton>
-            <ToggleButton value="android">SOCKS4</ToggleButton>
-            <ToggleButton value="ios">SOCKS5</ToggleButton>
-            <ToggleButton value="ssh">SSH</ToggleButton>
+            <FormLabel>Proxy Config: &nbsp;</FormLabel>
+            <ToggleButton value="no-proxy">No Proxy</ToggleButton>
+            <ToggleButton value="set-proxy">NEW PROXY</ToggleButton>
           </ToggleButtonGroup>
         </Box>
 
-        <Box
+        {selectedproxy === 'set-proxy' && (
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              color: isDarkTheme ? '#fff' : '#000',
+              gap: '14px',
+            }}
+          >
+            <InputWithLabel
+              label="Proxy URL"
+              inputIdentifierName="proxyUrl"
+              placeholder="Enter proxy url"
+              handleOnChange={handleProxyChange}
+            />
+            <small>Correct format: HOST:PORT@USER:PASS or HOST:PORT</small>
+          </Box>
+        )}
+
+        {/*   <Box
           sx={{
             display: 'flex',
             flexDirection: 'column',
@@ -443,46 +414,7 @@ const General = ({
             placeholder="Proxy Name"
             handleOnChange={handleproxyNameChange}
           />
-        </Box>
-        {/* <Box>
-        <Dropzone maxSize={104857600} onDrop={onDrop}>
-          {({ getRootProps, getInputProps }) => (
-            <section>
-              <div {...getRootProps()}>
-                <input
-                  type="file"
-                  id="file-upload"
-                  style={{ display: 'none' }}
-                  onChange={handleFileSelect}
-                />
-                <Box
-                  sx={{
-                    border: '1px solid #292929',
-                    borderRadius: '5px',
-                    padding: '10px',
-                    textAlign: 'center',
-                    marginTop: '10px',
-                    width: '100%',
-                    height: '120px',
-                  }}
-                >
-                  <BackupOutlinedIcon
-                    style={{
-                      fontSize: '36px',
-                      color: isDarkTheme ? '#fff' : '#000',
-                    }}
-                  />
-                  <Typography color={ isDarkTheme ? '#fff' : '#000'}>
-                    {selectedFiles.length === 0
-                      ? 'Click to upload file from your computer or drag your file here'
-                      : `${selectedFiles.length} image selected`}
-                  </Typography>
-                </Box>
-              </div>
-            </section>
-          )}
-        </Dropzone>
-      </Box> */}
+        </Box> 
         <Box
           sx={{
             marginInline: '5px',
@@ -491,19 +423,7 @@ const General = ({
             color: isDarkTheme ? '#fff' : '#000',
             gap: '20px',
           }}
-        >
-          {/* <InputWithLabel
-          label="Login"
-          inputIdentifierName="Login"
-          placeholder="Login"
-        />
-        <InputWithLabel
-          label="Password"
-          inputIdentifierName="Password"
-          placeholder="Password"
-          type="password"
-        /> */}
-        </Box>
+        ></Box>
         <Box
           sx={{
             marginInline: '5px',
@@ -517,296 +437,10 @@ const General = ({
             label="User Agent"
             inputIdentifierName="User Agent"
             placeholder="User Agent"
+            handleOnChange={handleUserAgentChange}
           />
         </Box>
-        {/* <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-between',
-          color: isDarkTheme ? '#fff' : '#000',
-          gap: '14px',
-        }}
-      >
-        <Typography sx={{ fontSize: '14px', fontWeight: '500' }}>
-          {' '}
-          WEBRTC
-        </Typography>
-        <ToggleButtonGroup
-          color="primary"
-          value={alignment5}
-          exclusive
-          onChange={handleChange4}
-          aria-label="Platform"
-          sx={{ height: '31px', borderRadius: '8px' }}
-        >
-          <ToggleButton value="web" sx={{ fontSize: '12px' }}>
-            OFF
-          </ToggleButton>
-          <ToggleButton value="android" sx={{ fontSize: '12px' }}>
-            REAL
-          </ToggleButton>
-          <ToggleButton value="ios" sx={{ fontSize: '12px' }}>
-            ALTERED
-          </ToggleButton>
-          <ToggleButton value="manual" sx={{ fontSize: '12px' }}>
-            MANUAL
-          </ToggleButton>
-        </ToggleButtonGroup>
-        <Typography sx={{ fontSize: '14px', fontWeight: '500' }}>
-          {' '}
-          Canvas
-        </Typography>
-        <ToggleButtonGroup
-          color="primary"
-          value={alignment6}
-          exclusive
-          onChange={handleChange5}
-          aria-label="Platform"
-          sx={{ height: '31px', borderRadius: '8px' }}
-        >
-          <ToggleButton value="web" sx={{ fontSize: '12px' }}>
-            OFF
-          </ToggleButton>
-          <ToggleButton value="android" sx={{ fontSize: '12px' }}>
-            REAL
-          </ToggleButton>
-          <ToggleButton value="ios" sx={{ fontSize: '12px' }}>
-            NOISE
-          </ToggleButton>
-        </ToggleButtonGroup>
-        <Typography sx={{ fontSize: '14px', fontWeight: '500' }}>
-          {' '}
-          WEBGL
-        </Typography>
-        <ToggleButtonGroup
-          color="primary"
-          value={alignment7}
-          exclusive
-          onChange={handleChange6}
-          aria-label="Platform"
-          sx={{ height: '31px', borderRadius: '8px', fontSize: '10px' }}
-        >
-          <ToggleButton value="web" sx={{ fontSize: '12px' }}>
-            OFF
-          </ToggleButton>
-          <ToggleButton value="android" sx={{ fontSize: '12px' }}>
-            REAL
-          </ToggleButton>
-          <ToggleButton value="ios" sx={{ fontSize: '12px' }}>
-            NOISE
-          </ToggleButton>
-        </ToggleButtonGroup>
-        <Typography sx={{ fontSize: '14px', fontWeight: '500' }}>
-          {' '}
-          Client Rects
-        </Typography>
-        <ToggleButtonGroup
-          color="primary"
-          value={alignment9}
-          exclusive
-          onChange={handleChange8}
-          aria-label="Platform"
-          sx={{ height: '31px', borderRadius: '8px' }}
-        >
-          <ToggleButton value="web" sx={{ fontSize: '12px' }}>
-            REAL
-          </ToggleButton>
-          <ToggleButton value="android" sx={{ fontSize: '12px' }}>
-            NOISE
-          </ToggleButton>
-        </ToggleButtonGroup>
-        <Typography sx={{ fontSize: '14px', fontWeight: '500' }}>
-          {' '}
-          Timezone
-        </Typography>
-        <ToggleButtonGroup
-          color="primary"
-          value={alignment10}
-          exclusive
-          onChange={handleChange9}
-          aria-label="Platform"
-          sx={{ height: '31px', borderRadius: '8px' }}
-        >
-          <ToggleButton value="web" sx={{ fontSize: '12px' }}>
-            AUTO
-          </ToggleButton>
-          <ToggleButton value="android" sx={{ fontSize: '12px' }}>
-            MANUAL
-          </ToggleButton>
-        </ToggleButtonGroup>
-        <Typography sx={{ fontSize: '14px', fontWeight: '500' }}>
-          {' '}
-          Language
-        </Typography>
-        <ToggleButtonGroup
-          color="primary"
-          value={alignment11}
-          exclusive
-          onChange={handleChange10}
-          aria-label="Platform"
-          sx={{ height: '31px', borderRadius: '8px' }}
-        >
-          <ToggleButton value="web" sx={{ fontSize: '12px' }}>
-            AUTO
-          </ToggleButton>
-          <ToggleButton value="android" sx={{ fontSize: '12px' }}>
-            MANUAL
-          </ToggleButton>
-        </ToggleButtonGroup>
-        <Typography sx={{ fontSize: '14px', fontWeight: '500' }}>
-          {' '}
-          GioLocation
-        </Typography>
-        <ToggleButtonGroup
-          color="primary"
-          value={alignment12}
-          exclusive
-          onChange={handleChange11}
-          aria-label="Platform"
-          sx={{ height: '31px', borderRadius: '8px' }}
-        >
-          <ToggleButton value="web" sx={{ fontSize: '12px' }}>
-            REAL
-          </ToggleButton>
-          <ToggleButton value="android" sx={{ fontSize: '12px' }}>
-            AUTO
-          </ToggleButton>
-          <ToggleButton value="android" sx={{ fontSize: '12px' }}>
-            AUTO
-          </ToggleButton>
-        </ToggleButtonGroup>
-        <Typography sx={{ fontSize: '14px', fontWeight: '500' }}>
-          {' '}
-          CPU
-        </Typography>
-        <ToggleButtonGroup
-          color="primary"
-          value={alignment13}
-          exclusive
-          onChange={handleChange12}
-          aria-label="Platform"
-          sx={{ height: '31px', borderRadius: '8px' }}
-        >
-          <ToggleButton value="web" sx={{ fontSize: '12px' }}>
-            REAL
-          </ToggleButton>
-          <ToggleButton value="android" sx={{ fontSize: '12px' }}>
-            MANUAL
-          </ToggleButton>
-        </ToggleButtonGroup>
-        <Typography sx={{ fontSize: '14px', fontWeight: '500' }}>
-          {' '}
-          Memory
-        </Typography>
-        <ToggleButtonGroup
-          color="primary"
-          value={alignment14}
-          exclusive
-          onChange={handleChange13}
-          aria-label="Platform"
-          sx={{ height: '31px', borderRadius: '8px' }}
-        >
-          <ToggleButton value="web" sx={{ fontSize: '12px' }}>
-            REAL
-          </ToggleButton>
-          <ToggleButton value="android" sx={{ fontSize: '12px' }}>
-            MANUAL
-          </ToggleButton>
-        </ToggleButtonGroup>
-        <Typography sx={{ fontSize: '14px', fontWeight: '500' }}>
-          {' '}
-          Screen
-        </Typography>
-        <ToggleButtonGroup
-          color="primary"
-          value={alignment15}
-          exclusive
-          onChange={handleChange14}
-          aria-label="Platform"
-          sx={{ height: '31px', borderRadius: '8px' }}
-        >
-          <ToggleButton value="web" sx={{ fontSize: '12px' }}>
-            REAL
-          </ToggleButton>
-          <ToggleButton value="android" sx={{ fontSize: '12px' }}>
-            MANUAL
-          </ToggleButton>
-        </ToggleButtonGroup>
-        <Typography sx={{ fontSize: '14px', fontWeight: '500' }}>
-          {' '}
-          Media Devices
-        </Typography>
-        <ToggleButtonGroup
-          color="primary"
-          value={alignment13}
-          exclusive
-          onChange={handleChange14}
-          aria-label="Platform"
-          sx={{ height: '31px', borderRadius: '8px' }}
-        >
-          <ToggleButton value="web" sx={{ fontSize: '12px' }}>
-            REAL
-          </ToggleButton>
-          <ToggleButton value="android" sx={{ fontSize: '12px' }}>
-            MANUAL
-          </ToggleButton>
-        </ToggleButtonGroup>
-        <Typography sx={{ fontSize: '14px', fontWeight: '500' }}>
-          {' '}
-          Ports
-        </Typography>
-        <ToggleButtonGroup
-          color="primary"
-          value={alignment4}
-          exclusive
-          onChange={handleChange3}
-          aria-label="Platform"
-          sx={{ height: '31px', borderRadius: '8px' }}
-        >
-          <ToggleButton value="web" sx={{ fontSize: '12px' }}>
-            REAL
-          </ToggleButton>
-          <ToggleButton value="android" sx={{ fontSize: '12px' }}>
-            PROTECT
-          </ToggleButton>
-        </ToggleButtonGroup>
-      </Box>
-      <Box sx={{ color: isDarkTheme ? '#fff' : '#000' }}>
-        <FormControlLabel
-          value="start"
-          control={<Switch color="primary" />}
-          label="Ports"
-          labelPlacement="start"
-        />
-      </Box>
-      <Box sx={{ color: isDarkTheme ? '#fff' : '#000' }}>
-        <FormControlLabel
-          value="start"
-          control={<Switch color="primary" />}
-          label="Command Line Switches"
-          labelPlacement="start"
-        />
-      </Box>
-      <Box>
-        <Typography
-          sx={{
-            color: isDarkTheme ? '#fff' : '#000',
-            fontSize: '14px',
-            fontWeight: '500',
-            marginBottom: '10px',
-          }}
-        >
-          Notes
-        </Typography>
-        <OutlinedInput
-          sx={{ width: '100%' }}
-          id="outlined-adornment-weight"
-          multiline
-          maxRows={8}
-          rows={4}
-        />
-      </Box> */}
+        */}
       </Box>
     </form>
   );

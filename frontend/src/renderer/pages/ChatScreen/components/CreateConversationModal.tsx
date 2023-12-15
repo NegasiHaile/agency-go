@@ -33,7 +33,9 @@ export default function CreateConversationModal({ open, setOpen, getAllConversat
 
   const getOptions = () =>{
     if(data){
-        const options = data?.data?.map((employee:any)=>{
+        // filter out your user since you dont want to talk to yourself
+        const employees = data?.data?.employees.filter((employee) => employee.email !== userData.user.email);
+        const options = employees.map((employee:any)=>{
             return {
                 value: employee.email,
                 label: employee.name
@@ -41,7 +43,7 @@ export default function CreateConversationModal({ open, setOpen, getAllConversat
          })
          return options
     }
-    else return [] 
+    else return []
   }
 
   const handleNewParticipant = (sid: string) =>{
@@ -129,7 +131,7 @@ export default function CreateConversationModal({ open, setOpen, getAllConversat
               inputIdentifierName="conversation_name"
               placeholder="Enter conversation name"
               handleOnChange={(name,value)=> setFriendlyName(value)}
-            /> 
+            />
 
           </Box>
           <Box

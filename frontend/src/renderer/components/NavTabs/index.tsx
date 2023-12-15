@@ -3,6 +3,7 @@ import AccountSvg from 'renderer/assets/svg/AccountSvg';
 import ChevronSettingNav from 'renderer/assets/svg/ChevronSettingNav';
 import classes from './styles.module.css';
 import { Typography, useTheme } from '@mui/material';
+import { t } from 'i18next';
 
 interface NavTabsProps {
   isActive: boolean;
@@ -21,25 +22,23 @@ function NavTabs(props: NavTabsProps) {
   const { isActive, navItem, handleOnChange } = props;
   const { label, value, icon } = navItem;
 
- const getTextColor = () => {
-   let color =
-     (isActive && isDarkTheme) ||
-     (!isActive && isDarkTheme) ||
-     (isActive && !isDarkTheme)
-       ? '#fff'
-       : '#000';
-   return color;
- };
+  const getTextColor = () => {
+    let color =
+      (isActive && isDarkTheme) ||
+      (!isActive && isDarkTheme) ||
+      (isActive && !isDarkTheme)
+        ? '#fff'
+        : '#000';
+    return color;
+  };
   const getIconColor = () => {
-     
-
-        let color =
-          (isActive && isDarkTheme) ||
-          (!isActive && isDarkTheme) ||
-          (isActive && !isDarkTheme)
-            ? classes.navIconDark
-            : classes.navIconLight;
-        return color;
+    let color =
+      (isActive && isDarkTheme) ||
+      (!isActive && isDarkTheme) ||
+      (isActive && !isDarkTheme)
+        ? classes.navIconDark
+        : classes.navIconLight;
+    return color;
   };
   return (
     <div
@@ -52,7 +51,7 @@ function NavTabs(props: NavTabsProps) {
           className={classes.navText}
           style={{ color: getTextColor() }}
         >
-          {label}
+          {t(`${label}`)}
         </Typography>
       </div>
       {isActive && (

@@ -1,4 +1,4 @@
-import { ReactNode, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import classes from './styles.module.css';
 import SideBar from './components/Sidebar';
 import Header from './components/Header';
@@ -18,13 +18,26 @@ function Dashboard({ children }: $Props) {
   const handleOpen = () => {
     setOpen(!open);
   };
+  useEffect(() => {
+    const isManager = window.location.pathname.startsWith('/manager-suite');
+    if (!isManager) {
+      window.electron.ipcRenderer.sendMessage('piev-dismiss');
+    }
+  }, []);
   return (
     <>
       <div className={classes.dashboardWrapper}>
-        <SideBar />
+        <Box>
+          <SideBar />
+        </Box>
         <div className={classes.secondChild}>
           <Header />
-          <Box sx={{marginTop:'100px'}}>{children}</Box>
+          <Box
+            display="flex"
+            sx={{ marginTop: '100px', paddingBottom: '50px' }}
+          >
+            {children}
+          </Box>
         </div>
         <div
           style={{

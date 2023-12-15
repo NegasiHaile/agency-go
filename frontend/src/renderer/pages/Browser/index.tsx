@@ -23,10 +23,6 @@ function getDivBounds(divId: string) {
 }
 
 function Browser() {
-  useEffect(() => {
-    window.electron.ipcRenderer.sendMessage('launch-anty-browser');
-  }, []);
-
   const theme = useTheme();
   const isDarkTheme = theme.palette.mode === 'dark';
 

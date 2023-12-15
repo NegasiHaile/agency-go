@@ -7,5 +7,13 @@ export const genderList = [
     label: 'Female',
     value: 'female',
   },
+  {
+    label: 'Trans',
+    value: 'trans',
+  },
+  {
+    label: 'Other',
+    value: 'other',
+  },
 ];
 export const assignEmployeeList = [];

@@ -1,7 +1,7 @@
 import { Types } from 'mongoose';
 
-enum Role {
-  CHATTER = 'chatter',
+export enum Role {
+  EMPLOYEE = 'employee',
   ADMIN = 'admin',
   Manager = 'manager',
 }
@@ -15,10 +15,15 @@ export interface Employee {
   name: string;
   email: string;
   agencyId: Types.ObjectId;
+  groupId?: Types.ObjectId;
   role: Role;
   userId: Types.ObjectId;
   status: Status;
-  password: string;
+  password?: string;
+  payRate: Number;
+  payInterval: String;
+  commission: Number;
+  shiftSchedular: String;
 }
 
 export interface EmployeeCreate {
@@ -26,7 +31,12 @@ export interface EmployeeCreate {
   email: string;
   role: Role;
   creator: Types.ObjectId;
-  assignCreator: string[] | string;
+  assignCreator: Types.ObjectId[] | Types.ObjectId;
+  groupId: Types.ObjectId;
+  payRate: Number;
+  payInterval: Number;
+  commission: Number;
+  shiftSchedular: string;
 }
 
 export interface EmployeeUpdate {
@@ -38,4 +48,8 @@ export interface EmployeeUpdate {
   status: Status;
   creator: string[];
   assignCreator: string[] | string;
+  payRate: number;
+  payInterval: string;
+  commission: number;
+  shiftSchedular: string;
 }

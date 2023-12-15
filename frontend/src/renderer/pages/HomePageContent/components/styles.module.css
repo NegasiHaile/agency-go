@@ -1,5 +1,12 @@
 .earningsContainer {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
+  background: #222;
+}
+
+
+.myShiftsDetails > *:not(:last-child) {
+    border-right: solid 1px #7B7E85;
+}
+
+.myShiftsDetails > *:not(:first-child) {
+  padding-left: 12px;
 }

@@ -123,12 +123,11 @@ async function updateEmployee(data: any) {
 }
 async function activateEmployee(data: any) {
   const endPoint = 'employee/' + data.id;
-
   const bodyData = {
-    status: !data.status ? 'active' : 'inactive',
+    status: 'active',
   };
   const options = {
-    method: 'PUT' as 'PUT',
+    method: 'PATCH' as 'PATCH',
     headers: {
       'content-type': 'application/json',
     },
@@ -146,7 +145,7 @@ async function dectivateEmployee(data: any) {
     status: 'deactivate',
   };
   const options = {
-    method: 'PUT' as 'PUT',
+    method: 'PATCH' as 'PATCH',
     headers: {
       'content-type': 'application/json',
     },

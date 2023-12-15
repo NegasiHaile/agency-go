@@ -35,6 +35,7 @@ export default function MultiSelect({
         labelId="demo-multi-select-label"
         id="demo-multi-select"
         multiple={multiple}
+        defaultValue={selectedValues}
         value={selectedValues}
         label="Select Values"
         onChange={handleChange}

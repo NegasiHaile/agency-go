@@ -1,85 +1,49 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { AuthContext } from 'renderer/contexts/AuthContext';
 import useQuery from 'renderer/hooks/useQuery';
+import { Creator } from 'renderer/types/creator';
 import fetchReq from 'utils/fetch';
 
-export interface IOfManagerCred {
-  email: string;
-  password: string;
-}
-
-export interface IProxyCreds {
-  hostname: string;
-  password: string;
-  port: number;
-  protocol: string;
-  username: string;
-}
-
-export interface IProxyUser {
-  user_pass: string;
-  username: string;
-}
-
-export interface ICreatorProxy {
-  creds: IProxyCreds;
-  proxyUser: IProxyUser;
-}
-
-export interface ICreatorList {
-  _id: ICreatorList | null;
-  creatorName: string;
-  imageSrc: string;
-  gender: string;
-  internalNotes: string;
-  assignEmployee: string[];
-  activated: boolean;
-  autoRelink: boolean;
-  id: string;
-  status: boolean;
-  ofcreds: IOfManagerCred;
-  proxy: ICreatorProxy;
-}
-
-export interface ISelectedCreator {
-  creatorName: string;
-  gender: string;
-  id: string;
-  internalNotes: string;
-  autoRelink: boolean;
-  assignEmployee: any[];
-  proxy: boolean;
-  agency: string;
-  creator: string;
-  status: boolean;
-}
-
-const useDataCreators = () => {
-  const agencyId = localStorage.getItem('AgencyId');
-  const [creators, setCreators] = useState<ICreatorList[]>([]);
-  const [selectedCreator, setSelectedCreator] = useState<ICreatorList | null>(
+const useDataCreators = (preselected?: string | null) => {
+  const { userData } = useContext(AuthContext);
+  const agencyId = localStorage.getItem('AgencyId')
+  const [creators, setCreators] = useState<Creator[]>([]);
+  const [totalCreatorsCount, setTotalCreatorsCount]= useState<number>()
+  const [selectedCreator, setSelectedCreator] = useState<Creator | null>(
     null
   );
-  const { data, isLoading, refetch, setData } = useQuery({
+  const { data, isLoading, refetch, setData,setCurrnetPage,currentPage ,paginationLimit} = useQuery({
     key: 'get-creator',
-    params: agencyId,
+    params: userData?.agency?._id,
   });
 
   useEffect(() => {
     const creatorsRes =
-      data?.data?.map((item: any) => ({
+      data?.data?.creators?.map((item: any) => ({
         ...item,
         id: item?._id,
       })) || [];
+    const creators = creatorsRes as Creator[];
     setCreators(creatorsRes);
+    setTotalCreatorsCount (data?.data?.totalDocument);
+    if (preselected) {
+      const selected = creators.find(c => c.id === preselected);
+      if (selected) {
+        setSelectedCreator(selected);
+      }
+    } else {
+      const selected = creators.at(0);
+      if (selected) {
+        setSelectedCreator(selected);
+      }
+    }
   }, [data]);
 
   const handleSearch = (data: any) => {
     const queryString = Object.keys(data)
-      .map((key) => `${key}=${encodeURIComponent(data[key])}`)
+      .map((key) => `${key}=${(data[key])}`)
       .join('&');
-
-    let endpoint = `creators/search?agencyId=${agencyId}&${queryString}`;
-
+    let endpoint = `creators/search/data?${queryString}&page=${currentPage}&limit=${paginationLimit}`;
     let options = {
       method: 'GET' as 'GET',
       headers: {
@@ -91,7 +55,7 @@ const useDataCreators = () => {
       .then((response) => response.json())
       .then((res) => {
         setData(res);
-        setCreators(res?.data);
+        // setCreators(res?.data.data);
         setSelectedCreator(res?.data[0]._id);
       })
       .catch((err) => {
@@ -106,6 +70,9 @@ const useDataCreators = () => {
     setSelectedCreator,
     refetch,
     handleSearch,
+    setCurrnetPage,
+    currentPage,
+    totalCreatorsCount,
   };
 };
 

@@ -1,6 +1,6 @@
 import { Divider, Stack, Typography, useTheme } from '@mui/material';
 import { ReactNode } from 'react';
-import theme from 'renderer/styles/muiTheme';
+import CountUp from 'react-countup';
 
 interface $Props {
   title: string;
@@ -8,7 +8,7 @@ interface $Props {
   icon?: ReactNode;
 }
 
-export default function EarningsCard({ title, amount, icon }: $Props) {
+export default function EarningsCard({ title, amount }: $Props) {
   const theme = useTheme();
   const isDarkTheme = theme.palette.mode === 'dark';
   return (
@@ -18,51 +18,20 @@ export default function EarningsCard({ title, amount, icon }: $Props) {
       alignItems="center"
       justifyContent={'space-between'}
       sx={{
-        padding: '32px',
+        padding: '18px',
         border: '1px solid',
         borderColor: isDarkTheme ? '#292929' : '#EAF1FF',
+        // background: isDarkTheme ? '#0C0C0C' : 'white' ,
       }}
     >
       <Stack spacing="10px" minWidth="60%">
-        <Typography fontWeight="600" fontSize="14px">
+        <Typography fontWeight="600" fontSize="12px">
           {title}
         </Typography>
-        <Typography fontSize="36px" fontWeight={700}>
-          {amount}
+        <Typography fontSize="24px" fontWeight={700}>
+          <CountUp end={parseInt(amount)} duration={1} decimals={2}/>
         </Typography>
       </Stack>
-
-      {icon && (
-        <Divider
-          orientation="vertical"
-          sx={{
-            display: 'flex',
-            backgroundColor: theme.palette.primary.contrastText,
-            width: '1px',
-          }}
-          component="div"
-        />
-      )}
-      <div
-        style={{
-          backgroundColor: isDarkTheme ? '#292929' : '#EAF1FF',
-          borderRadius: '200px',
-          width: '50px',
-          height: '50px',
-        }}
-      >
-        <div
-          style={{
-            marginTop: '12px',
-            marginLeft: '12px',
-            filter: isDarkTheme
-              ? ' brightness(0) saturate(100%) invert(100%) sepia(100%) saturate(0%) hue-rotate(248deg) brightness(106%) contrast(106%)'
-              : 'brightness(0) saturate(100%) invert(41%) sepia(98%) saturate(1260%) hue-rotate(177deg) brightness(101%) contrast(102%)',
-          }}
-        >
-          {icon}
-        </div>
-      </div>
     </Stack>
   );
 }

@@ -16,13 +16,12 @@ const getAuthorization = (req: RequestWithUser) => {
 };
 
 export const AuthMiddleware = async (req: RequestWithUser, res: Response, next: NextFunction) => {
-  if(req.body.newInvite){
+  if (req.body.newInvite) {
     return next();
   }
 
   try {
     const Authorization = getAuthorization(req);
-
     if (Authorization) {
       const { _id } = (await verify(Authorization, SECRET_KEY)) as DataStoredInToken;
       const findUser = await UserModel.findById(_id);
@@ -42,6 +41,9 @@ export const AuthMiddleware = async (req: RequestWithUser, res: Response, next: 
 };
 
 export const isAdminMiddleware = async (req: RequestWithUser, res: Response, next: NextFunction) => {
+  if (req.body.newInvite) {
+    return next();
+  }
   try {
     if (req?.user?.isAdmin) {
       next();

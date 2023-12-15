@@ -92,7 +92,7 @@ function DateBox(props: any) {
   return (
     <div className={classes.dateBoxItem} 
     
-    style={{ width: '130px' ,borderBottom: '4px solid'}}>
+    style={{ width: '120px' ,borderBottom: '2px solid', justifyContent:'center',display:'flex' }}>
       {date.day} <br /> {date.date}
     </div>
   );
@@ -127,7 +127,7 @@ function TimeBoxItem(props: any) {
         <>
           <div
             className={classes.timeBoxItem}
-            style={{ width: '110px', marginRight: '3px' }}
+            style={{ width: '120px' }}
           >
             {thisData.employee[0].name} <br />
             {thisData.startTime}:00 - {thisData.endTime}:00
@@ -138,7 +138,7 @@ function TimeBoxItem(props: any) {
           {' '}
           <div
             className={classes.deactiveItemBox}
-            style={{ width: '110px', marginRight: '3px' }}
+            style={{ width: '120px' }}
           >
             no-shifts
           </div>
@@ -174,7 +174,7 @@ function EmployeeShiftsBox({ employees }: $shiftChart) {
       'sunday',
       'monday',
       'tuesday',
-      'wednessday',
+      'wednesday',
       'thursday',
       'friday',
       'saturday',

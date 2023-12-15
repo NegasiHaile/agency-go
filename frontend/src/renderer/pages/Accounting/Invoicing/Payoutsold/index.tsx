@@ -201,7 +201,7 @@ const Payouts = () => {
                 <TableCell
                   sx={{
                     color:
-                      row.invoiceStatus === 'Unpaid' ? '#FEC84A' : '#37DE8F',
+                      row.invoiceStatus === 'Unpaid' ? '#37DE8F' : '#FEC84A',
                   }}
                 >
                   <Typography
@@ -211,7 +211,7 @@ const Payouts = () => {
                       borderRadius: '14px',
                       fontSize: '12px',
                       background:
-                        row.invoiceStatus === 'Unpaid' ? '#473200' : '#072718',
+                        row.invoiceStatus === 'Unpaid' ? '#072718' : '#473200',
                     }}
                   >
                     {row.invoiceStatus}

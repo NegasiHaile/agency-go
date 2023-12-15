@@ -12,6 +12,7 @@ interface $roleData {
   id?: string;
   rolename?: string;
   description?: string;
+  status?: string | undefined;
 }
 interface $props {
   type: string;
@@ -20,6 +21,11 @@ interface $props {
   handleOnSubmit?: (data: any, type: string) => void;
   value: $roleData | null;
 }
+
+const statusOptions = [
+  { value: 'active', label: 'Active' },
+  { value: 'inactive', label: 'Inactive' },
+];
 
 const AddRoleModal = ({
   type,
@@ -32,12 +38,14 @@ const AddRoleModal = ({
   const handleModalClose = () => {
     setOpen(false);
   };
-  const handleOnChange = (name: string, value: string) => {
+  const handleOnChange = (name: string, value?: string) => {
     setRoleData({ ...roleData, [name]: value });
   };
   const handleSubmit = () => {
     if (roleData?.rolename && roleData?.description) {
-      if (type === 'edit') roleData.id = value?.id;
+      if(roleData?.rolename && roleData?.description && roleData?.status){
+        if (type === 'edit') roleData.id = value?.id;
+      }
       handleOnSubmit(roleData, type);
       setOpen(false);
     }
@@ -46,6 +54,7 @@ const AddRoleModal = ({
     setRoleData({
       rolename: value?.rolename || '',
       description: value?.description || '',
+      status: value?.status,
     });
   }, [value]);
 
@@ -60,7 +69,6 @@ const AddRoleModal = ({
       <Box
         className={styles.modal}
         sx={{
-         
           backgroundColor: isDarkTheme ? '#292929' : '#fff',
         }}
       >
@@ -93,6 +101,16 @@ const AddRoleModal = ({
               value={roleData?.description}
               handleOnChange={handleOnChange}
             />
+            {type === 'edit' && (
+              <DropdownWithLabel
+                label="Status"
+                inputIdentifierName="status"
+                placeholder="Enter Role description"
+                value={roleData?.status}
+                options={statusOptions}
+                handleOnChange={handleOnChange}
+              />
+            )}
           </Stack>
         </form>
       </Box>

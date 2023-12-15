@@ -7,8 +7,6 @@ import helmet from 'helmet';
 import hpp from 'hpp';
 import morgan from 'morgan';
 import { connect, set, ConnectOptions } from 'mongoose';
-import swaggerJSDoc from 'swagger-jsdoc';
-import swaggerUi from 'swagger-ui-express';
 import { NODE_ENV, PORT, LOG_FORMAT, ORIGIN, CREDENTIALS } from '@config';
 import { dbConnection } from './database/index';
 import { Routes } from '@interfaces/routes.interface';
@@ -36,7 +34,8 @@ export class App {
     this.io = new SocketIOServer(this.server);
 
     const pdfDirectory = path.join('assets', 'pdf');
-    this.app.use("/assets/pdf",express.static(pdfDirectory));
+
+    this.app.use('/assets/pdf', express.static(pdfDirectory));
 
     this.connectToDatabase();
     this.initializeMiddlewares();
@@ -52,6 +51,7 @@ export class App {
         logger.info(`=================================`);
         logRoutes(this.app);
       });
+
       /* Socket will never close */
       this.server.timeout = 0;
       initializeWebSocket(this.server);
@@ -88,6 +88,7 @@ export class App {
     }
 
     try {
+      logger.info(dbConnection.url);
       await connect(dbConnection.url, dbConnection.options as ConnectOptions);
       logger.info('Connected to database');
     } catch (err) {

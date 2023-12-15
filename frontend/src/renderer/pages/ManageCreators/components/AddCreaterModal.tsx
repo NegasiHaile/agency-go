@@ -1,8 +1,10 @@
 /* eslint-disable react/no-unescaped-entities */
-import React, { useState } from 'react';
+import '../../../styles/scrollBar.css'
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   Checkbox,
+  FormControl,
   FormControlLabel,
   FormGroup,
   Link,
@@ -26,6 +28,7 @@ import { genderList } from '../constant';
 import useFormCreator from '../hooks/useForm';
 import ImageUpload from './ImageUploader';
 import IconCheckboxes from 'renderer/components/RadioButton';
+import SetProxyModal from './AddProxyMoxal';
 
 interface $Props {
   open: boolean;
@@ -94,6 +97,8 @@ export default function AddCreaterModal({
     control,
     isLoading,
     isAutoRelink,
+    creatorImage,
+    setCreatorImage,
     toggleAutoRelink,
     setEmployeeOptions,
     setValue,
@@ -109,7 +114,7 @@ export default function AddCreaterModal({
   );
 
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
-
+  const [proxyOpen, setProxyOpen] = useState<boolean>(false);
   const handleOptionChange = (optionValue: string) => {
     if (selectedOptions.includes(optionValue)) {
       setSelectedOptions(
@@ -132,22 +137,34 @@ export default function AddCreaterModal({
 
   const cancelHandler = () => {
     setSelectedValues([]);
+    setCreatorImage('');
     setOpen(false);
   };
 
   const handleModalClose = () => {
     setSelectedValues([]);
+    setCreatorImage('');
     setOpen(false);
   };
 
-  const handleChangeFile = (file: File | undefined) => {
-    console.log('file ******', file);
-    if (file) {
-      console.log('file ******', URL.createObjectURL(file));
+  // const handleChangeFile = (file: File | undefined) => {
+  //   console.log('file ******', file);
+  //   if (file) {
+  //     console.log('file ******', URL.createObjectURL(file));
+  //   }
+
+  // };
+
+  useEffect(() => {
+    if (type == 'add') {
+      setValue('agencyComission', 30);
+      setValue('creatorComission', 70);
     }
-  };
+  }, [type]);
+
   const theme = useTheme();
   const isDarkTheme = theme.palette.mode === 'dark';
+
   return (
     <Overlay
       heading={`${type == 'add' ? 'Add' : 'Edit'} Creators`}
@@ -155,7 +172,9 @@ export default function AddCreaterModal({
       handleClose={handleModalClose}
       style={{
         width: '700px',
-        height: '100vh',
+        height: '600px',
+        marginTop: '-50px',
+        overflowY: 'scroll'
       }}
     >
       <Box
@@ -175,6 +194,7 @@ export default function AddCreaterModal({
             sx={{
               paddingTop: '20px',
               paddingBottom: '20px',
+              '-ms-overflow-style': 'none'
             }}
             className={styles.inputListWrapper}
           >
@@ -183,7 +203,13 @@ export default function AddCreaterModal({
                 type == 'add' ? 'Add' : 'Edit'
               } Headshot`}</Typography>
               <Box>
-                <ImageUpload handleChangeFile={handleChangeFile} />
+                <ImageUpload
+                  creatorImage={creatorImage}
+                  setCreatorImage={setCreatorImage}
+                  register={register as any}
+                  setValue={setValue}
+                  // handleChangeFile={handleChangeFile}
+                />
               </Box>
             </Box>
             <InputWithLabel
@@ -227,7 +253,7 @@ export default function AddCreaterModal({
               placeholder="Select gender"
               register={register as any}
             />
-            <DropdownWithLabel
+            {/* <DropdownWithLabel
               selectStyle={{
                 border: '1px solid #292929',
                 backgroundColor: isDarkTheme ? '#0C0C0C' : '#fff',
@@ -237,20 +263,23 @@ export default function AddCreaterModal({
               options={genderList}
               placeholder="Select Employee"
               register={register as any}
-            />
-            {/* <MultiSelectDropdown
+            /> */}
+            <MultiSelectDropdown
               options={employeeOptions}
               selectedValues={selectedValues}
               setSelectedValues={(selected: any) => {
-                console.log(selected, 'selectedselected');
+                if (selected.includes('')) {
+                  selected = [];
+                  setSelectedValues(() => [])
+                }
+                else { 
+                  setSelectedValues(selected);
+                }
                 setValue('assignEmployee', selected);
-                setSelectedValues(selected);
               }}
               label="Assign employee"
               inputIdentifierName="assignEmployee"
-
-              
-            /> */}
+            />
             <InputWithLabel
               inputStyle={{
                 border: '1px solid #292929',
@@ -258,7 +287,7 @@ export default function AddCreaterModal({
               }}
               label="Internal notes"
               inputIdentifierName="internalNotes"
-              placeholder="Enter name"
+              placeholder="Add Internal Notes"
               register={register as any}
             />
             <Box>
@@ -273,21 +302,26 @@ export default function AddCreaterModal({
                     border: '1px solid #292929',
                     backgroundColor: isDarkTheme ? '#0C0C0C' : '#fff',
                   }}
-                  label=""
-                  inputIdentifierName="agency"
+                  label="Agency"
+                  type="number"
+                  max={10}
+                  min={1}
+                  inputIdentifierName="agencyComission"
                   placeholder="Agency %"
-                  // register={register as any}
+                  register={register as any}
                 />
                 <InputWithLabel
                   inputStyle={{
                     border: '1px solid #292929',
                     backgroundColor: isDarkTheme ? '#0C0C0C' : '#fff',
                   }}
-                  label=" "
-                  inputIdentifierName="creator"
+                  label="Creator "
+                  type="number"
+                  max={10}
+                  min={1}
+                  inputIdentifierName="creatorComission"
                   placeholder="Creator %"
-
-                  // register={register as any}
+                  register={register as any}
                 />
               </Box>
             </Box>
@@ -343,7 +377,7 @@ export default function AddCreaterModal({
               alignItems={'center'}
             >
               <Box display={'flex'} alignItems={'center'}>
-                <RadioButton title="Use AgencyGO Proxy" />
+                <FormControlLabel label="Use AgencyGO Proxy" control={<Checkbox />} onChange={(ev, checked) => setValue('proxy.isAgencyProxy', checked)}/>
                 {/* <IconCheckboxes
                   title="Use AgencyGO Proxy"
                   name={'isAgencyProxy'}
@@ -351,7 +385,7 @@ export default function AddCreaterModal({
                   // register={register as any}
                 /> */}
               </Box>
-              <Link>Use Custom Proxy</Link>
+              <Link onClick={() => setProxyOpen(true)}>Use Custom Proxy</Link>
             </Box>
             {/* <Typography fontSize={'14px'}>
               Model Data (select at least 3 and a maximum of 5 options)
@@ -397,6 +431,12 @@ export default function AddCreaterModal({
           </FormGroup>
         </form>
       </Box>
+      <SetProxyModal 
+        open={proxyOpen}
+        setOpen={setProxyOpen}
+        value='asdfasdf' 
+        onChange={(proxy) => setValue('proxy.proxyString', proxy)}
+      />
       <ModalFooter
         addHandler={addHandler}
         cancelHandler={cancelHandler}

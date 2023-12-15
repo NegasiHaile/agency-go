@@ -45,9 +45,7 @@ export default function Login() {
       .then((response) => response.json())
       .then((res) => {
         if (res.message == 'login successfully') {
-          console.log('res', res);
-          
-          const twilionUrl = 'chat/chattoken'
+          const twilionUrl = 'chat/chattoken';
           const authToken = res.token?.token;
           const agencyId = res.data?.agencyId;
           const userId = res.data?.Id;
@@ -59,20 +57,19 @@ export default function Login() {
             method: 'POST' as 'POST',
             headers: { 'content-type': 'application/json' },
             body: JSON.stringify({
-              email: data?.email
+              email: data?.email,
             }),
           };
           fetchReq(twilionUrl, twilioOptions)
-           .then((response) => response.json())
-           .then((res) =>{
-             localStorage.setItem('TwilioToken',res.data)
-             login();
-             navigate('/home');
-             
-            }).catch((e)=>{
-              console.log('chat token error occoured',e);
-              
+            .then((response) => response.json())
+            .then((res) => {
+              localStorage.setItem('TwilioToken', res.data);
+              login();
+              navigate('/home');
             })
+            .catch((e) => {
+              console.log('chat token error occoured', e);
+            });
         } else {
           console.log('login error occoured: ', res.message);
         }
@@ -81,8 +78,6 @@ export default function Login() {
         console.log('Error occured: ', err);
       });
   };
-
-  console.log('Logo', Logo);
 
   return (
     <main className={styles.loginWrap}>

@@ -17,7 +17,7 @@ const userWhiteLabel = () => {
   const [whiteLables, setWhiteLabels] = useState<any>({});
   const { data, refetch, setData, isLoading, isError } = useQuery({
     key: 'get-agencyById',
-    params: { id: userData.agency._id },
+    params: { id: userData?.agency?._id },
   });
 
   useEffect(() => {

@@ -6,6 +6,8 @@ import UploadedImage from './UploadedImage';
 import useFormWhiteLabel from './Hooks/useForm';
 import { useState } from 'react';
 import styled from '@emotion/styled';
+import InputColorPicker from './ColorPicker';
+import { useTranslation } from 'react-i18next';
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -29,11 +31,19 @@ function WhiteLabel() {
     setFile,
     agencyLogo,
     setAgencyLogo,
+    primaryColor,
+    setPrimaryColor,
+    secondaryColor,
+    setSecondaryColor,
   } = useFormWhiteLabel();
+  const {t} = useTranslation()
   const [whiteLabelData, setWhiteLabelData] = useState<any>(null);
+  // const [primaryColor, setPrimaryColor] = useState('');
+  // const [secondaryColor, setSecondaryColor] = useState('');
   const handleOnChange = (name: string, value: string) => {
     setWhiteLabelData({ ...whiteLabelData, [name]: value });
   };
+
   const handleImageChange = (e: any) => {
     if (e.target.files) {
       const file = e.target?.files[0];
@@ -77,7 +87,7 @@ function WhiteLabel() {
             }}
           >
             <Typography sx={{ mb: 2 }}>
-              Upload your Company/Agency's Logo
+              {t("Upload your Company/Agency's Logo")}
             </Typography>
             {agencyLogo ? (
               <Box>
@@ -86,30 +96,101 @@ function WhiteLabel() {
             ) : (
               <ImageUpload handleImageChange={handleImageChange} />
             )}
-            {agencyLogo && <UploadedImage file={agencyLogo} />}
-            <Box
-              sx={{
+            {/* {agencyLogo && <UploadedImage file={agencyLogo} />} */}
+            {agencyLogo && (
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  gap: 3,
+                  margin: '20px 0px',
+                }}
+              >
+                <Button component="label">
+                  {t("Change")}
+                  <VisuallyHiddenInput
+                    type="file"
+                    onChange={handleImageChange}
+                  />
+                </Button>
+                <ButtonEle
+                  variant="contained"
+                  onClick={handleImageChange}
+                  className="btn"
+                >
+                  {t("Remove")}
+                </ButtonEle>
+              </Box>
+            )}
+          </Box>
+          <Box
+            sx={{ display: 'flex', gap: 2, justifyContent: 'space-between' }}
+          >
+            <div
+              style={{
                 display: 'flex',
-                justifyContent: 'center',
-                gap: 3,
-                margin: '20px 0px',
+                justifyContent: 'space-between',
+                gap: '5px',
+                border: '1px solid #292929',
+                backgroundColor: '#0C0C0C',
+                width: '50%',
+                padding: '8px',
+                borderRadius: '5px',
+              }}
+              onClick={() => {
+                document.getElementById('primary-color-picker')?.click();
               }}
             >
-              <Button component="label">
-                Change
-                <VisuallyHiddenInput type="file" onChange={handleImageChange} />
-              </Button>
-              <ButtonEle
-                variant="contained"
-                onClick={handleImageChange}
-                className="btn"
-              >
-                Remove
-              </ButtonEle>
-            </Box>
-          </Box>
-          <Box sx={{ display: 'flex', gap: 2 }}>
-            <InputWithLabel
+              <input
+                placeholder={t("Choose primary color")}
+                value={primaryColor}
+                maxLength={7}
+                style={{
+                  outline: 'none',
+                  color: '#fff',
+                  border: 'none',
+                  background: 'transparent',
+                }}
+                // {...register("primaryColor")}
+              />
+              <InputColorPicker
+                onChange={setPrimaryColor}
+                id={'primary-color-picker'}
+              />
+            </div>
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                gap: '5px',
+                border: '1px solid #292929',
+                backgroundColor: '#0C0C0C',
+                width: '50%',
+                padding: '8px',
+                borderRadius: '5px',
+              }}
+              onClick={() => {
+                document.getElementById('secondary-color-picker')?.click();
+              }}
+            >
+              <input
+                placeholder={t("Choose secondary color")}
+                value={secondaryColor}
+                maxLength={7}
+                style={{
+                  outline: 'none',
+                  color: '#fff',
+                  border: 'none',
+                  background: 'transparent',
+                }}
+                // {...register("secondaryColor")}
+              />
+              <InputColorPicker
+                onChange={setSecondaryColor}
+                id={'secondary-color-picker'}
+              />
+            </div>
+            {/* <InputWithLabel
               label="Primary Color"
               inputIdentifierName="primaryColor"
               placeholder="Enter primary color"
@@ -132,12 +213,12 @@ function WhiteLabel() {
               register={register as any}
               handleOnChange={handleOnChange}
               errors={errors}
-            />
+            /> */}
           </Box>
           <InputWithLabel
-            label="Company/Agency Name"
+            label={t("Company/Agency Name")}
             inputIdentifierName="agencyName"
-            placeholder="Enter agency name"
+            placeholder={t("Enter agency name")}
             inputStyle={{
               border: '1px solid #292929',
               backgroundColor: '#0C0C0C',
@@ -147,9 +228,9 @@ function WhiteLabel() {
             errors={errors}
           />
           <InputWithLabel
-            label="Company/Agency Email"
+            label={t("Company/Agency Email")}
             inputIdentifierName="email"
-            placeholder="Enter agency email"
+            placeholder={t("Enter agency email")}
             inputStyle={{
               border: '1px solid #292929',
               backgroundColor: '#0C0C0C',
@@ -159,9 +240,9 @@ function WhiteLabel() {
             errors={errors}
           />
           <InputWithLabel
-            label="Company/Agency Phone"
+            label={t("Company/Agency Phone")}
             inputIdentifierName="phone"
-            placeholder="Enter agency phone"
+            placeholder={t("Enter agency phone")}
             inputStyle={{
               border: '1px solid #292929',
               backgroundColor: '#0C0C0C',
@@ -171,9 +252,9 @@ function WhiteLabel() {
             errors={errors}
           />
           <InputWithLabel
-            label="Company/Agency Website"
+            label={t("Company/Agency Website")}
             inputIdentifierName="websiteUrl"
-            placeholder="Enter agency website"
+            placeholder={t("Enter agency website")}
             inputStyle={{
               border: '1px solid #292929',
               backgroundColor: '#0C0C0C',
@@ -184,7 +265,7 @@ function WhiteLabel() {
           />
           <Box sx={{ display: 'flex', justifyContent: 'end' }}>
             <ButtonEle type="submit" className="btn">
-              Save Changes
+              {t("Save Changes")}
             </ButtonEle>
           </Box>
         </Stack>

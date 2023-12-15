@@ -18,7 +18,7 @@ import theme from 'renderer/styles/muiTheme';
 import Avatar from 'renderer/assets/svg/AvatarSvg';
 import DeactivatedSvg from 'renderer/assets/svg/DeactivatedSvg';
 import Activated from 'renderer/assets/svg/ActivatedSvg';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import useMutation from 'renderer/hooks/useMutation';
 import styles from './styles.module.css';
 import AddCreaterModal from './components/AddCreaterModal';
@@ -26,6 +26,7 @@ import useDataCreators from './hooks/useData';
 import MenuButton from 'renderer/components/MenuButton';
 import fetchReq from 'utils/fetch';
 import Overlay from 'renderer/components/Settings/Wallet/Common/Modal';
+import PaginationPage from 'renderer/components/Pagination';
 
 const creatorsTableHeaders = [
   'Creators',
@@ -65,14 +66,16 @@ export default function ManageCreators() {
     selectedCreator,
     setSelectedCreator,
     handleSearch,
+    setCurrnetPage,
+    totalCreatorsCount,
   } = useDataCreators();
 
   // const { mutate: mutateDelete } = useMutation({
   //   key: 'delete-creator',
   // });
-  useEffect(() => {
-    handleSearch('');
-  }, []);
+  // useEffect(() => {
+  //   handleSearch('');
+  // }, []);
   const handleDelete = (id: string) => {
     let endpoint = `creators/${id}`;
     let options = {
@@ -90,7 +93,6 @@ export default function ManageCreators() {
         console.log('Error occured: ', err);
       });
   };
-  console.log(creators);
 
   const handleActivate = (id: string, status: boolean) => {
     const data = {
@@ -99,7 +101,7 @@ export default function ManageCreators() {
 
     let endpoint = `creators/${id}`;
     let options = {
-      method: 'PUT' as 'PUT',
+      method: 'PATCH' as 'PATCH',
       headers: {
         'content-type': 'application/json',
       },
@@ -126,7 +128,6 @@ export default function ManageCreators() {
     ];
     return tabData;
   };
-  console.log('creators', creators);
 
   const handleInitiateLink = (creator: any) => {
     const payload = {
@@ -177,8 +178,18 @@ export default function ManageCreators() {
   const handleAccountClose = () => {
     setOpenLinked(false);
   };
- const theme = useTheme();
- const isDarkTheme = theme.palette.mode === 'dark';
+  const theme = useTheme();
+  const isDarkTheme = theme.palette.mode === 'dark';
+
+  const pageCount = useMemo(() => {
+    if (totalCreatorsCount && totalCreatorsCount > 10) {
+      return Math.ceil(totalCreatorsCount / 10);
+    }
+  }, [totalCreatorsCount]);
+
+  const handleGetCurrentPage = (e: any, page: any) => {
+    setCurrnetPage(page);
+  };
 
   return (
     <Dashboard>
@@ -216,14 +227,25 @@ export default function ManageCreators() {
             <AddIcon sx={{ color: '#fff', marginTop: 0, fontSize: '14px' }} />
           </Button>
         </PageTopbar>
-        <Stack direction="row" sx={{ height: '90%' }}>
-          <Filter handleSearch={handleSearch} refetch={handleSearch} />
+
+        <Stack direction="row">
+          <Filter
+            handleSearch={handleSearch}
+            refetch={handleSearch}
+            setCurrnetPage={setCurrnetPage}
+          />
           <FilterTable
             isEmptyContent={!creators.length}
             tableHeaders={creatorsTableHeaders}
+            pagination={
+              <PaginationPage
+                count={pageCount}
+                handleGetCurrentPage={handleGetCurrentPage}
+              />
+            }
           >
             <>
-              {creators.map(
+              {creators?.map(
                 ({
                   creatorName: name,
                   gender,
@@ -233,53 +255,113 @@ export default function ManageCreators() {
                   status,
                   id,
                   autoRelink,
-                  imageSrc,
+                  creatorImage,
                   ofcreds,
+                  creatorComission,
+                  agencyComission,
                   proxy,
                 }) => (
-                  <TableRow
-                    key={name}
-                   
-                  >
-                    <TableCell scope="row">
-                      <Stack spacing={1} direction="row" alignItems="center">
-                        <Avatar />
-                        <Typography variant="h6" fontSize="18px">
-                          {name}
-                        </Typography>
-                      </Stack>
-                    </TableCell>
-                    <TableCell align="right">
-                      {gender === 'male' ? 'Male' : 'Female'}
-                    </TableCell>
-                    <TableCell>{internalNotes}</TableCell>
-                    <TableCell>
-                      <Box display={'flex'} justifyContent={'center'}>
-                        <Box
+                  <>
+                    <TableRow key={name}>
+                      <TableCell scope="row">
+                        <Stack spacing={1} direction="row" alignItems="center">
+                          {creatorImage ? (
+                            <img
+                              src={creatorImage}
+                              width={'30px'}
+                              height={'30px'}
+                              style={{ borderRadius: '50%' }}
+                            />
+                          ) : (
+                            <Avatar width={'30px'} height={'30px'} />
+                          )}
+
+                          <Typography variant="h6" fontSize="18px">
+                            {name}
+                          </Typography>
+                        </Stack>
+                      </TableCell>
+                      <TableCell align="right">
+                        {gender === 'male' ? 'Male' : 'Female'}
+                      </TableCell>
+                      <TableCell>{internalNotes}</TableCell>
+                      <TableCell>
+                        <Box display={'flex'} justifyContent={'center'}>
+                          <Box
+                            sx={{
+                              filter: isDarkTheme
+                                ? 'brightness(0) saturate(100%) invert(100%) sepia(3%) saturate(13%) hue-rotate(81deg) brightness(106%) contrast(106%);'
+                                : 'brightness(0) saturate(100%) invert(0%) sepia(4%) saturate(7500%) hue-rotate(244deg) brightness(94%) contrast(103%);',
+                            }}
+                          >
+                            <OnlyFansSvg />
+                          </Box>
+
+                          <Typography marginLeft={'10px'}> OnlyFans</Typography>
+                        </Box>
+                        <Typography
+                          component="small"
+                          fontSize="11px"
+                          marginLeft={'10px'}
                           sx={{
-                            filter: isDarkTheme
-                              ? 'brightness(0) saturate(100%) invert(100%) sepia(3%) saturate(13%) hue-rotate(81deg) brightness(106%) contrast(106%);'
-                              : 'brightness(0) saturate(100%) invert(0%) sepia(4%) saturate(7500%) hue-rotate(244deg) brightness(94%) contrast(103%);',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            textAlign: 'center',
                           }}
                         >
-                          <OnlyFansSvg />
-                        </Box>
-
-                        <Typography marginLeft={'10px'}> OnlyFans</Typography>
-                      </Box>
-                      <Typography
-                        component="small"
-                        fontSize="11px"
-                        marginLeft={'10px'}
-                      >
-                        {proxy !== null &&
-                        proxy.hasOwnProperty('creds') &&
-                        proxy.hasOwnProperty('proxyUser') ? (
-                          'Linked'
-                        ) : (
-                          <Button
-                            onClick={() =>
-                              handleInitiateLink({
+                          {proxy !== null &&
+                          proxy.hasOwnProperty('creds') &&
+                          proxy.hasOwnProperty('proxyUser') ? (
+                            'Linked'
+                          ) : (
+                            <Button
+                              onClick={() =>
+                                handleInitiateLink({
+                                  creatorName: name,
+                                  autoRelink,
+                                  gender,
+                                  id,
+                                  internalNotes,
+                                  activated,
+                                  assignEmployee,
+                                  creatorImage,
+                                  status,
+                                  ofcreds,
+                                })
+                              }
+                              size="small"
+                            >
+                              Link
+                            </Button>
+                          )}
+                        </Typography>
+                      </TableCell>
+                      <TableCell>
+                        {assignEmployee
+                          ?.map((employee: any) => {
+                            return `${employee.name} `;
+                          })
+                          .join(', ')}
+                      </TableCell>
+                      <TableCell>
+                        <Typography variant="body2">
+                          OnlyManager Proxy
+                        </Typography>
+                        <Typography variant="caption">
+                          107.175.227.145
+                        </Typography>
+                      </TableCell>
+                      <TableCell>
+                        {status ? <Activated /> : <DeactivatedSvg />}
+                      </TableCell>
+                      <TableCell align="right">
+                        <Stack spacing={2} direction="row" alignItems="center">
+                          <ButtonBase
+                            disabled={!status}
+                            style={{ color: status ? 'white' : 'gray' }}
+                            onClick={() => {
+                              setFormType('edit');
+                              setSelectedCreator({
                                 creatorName: name,
                                 autoRelink,
                                 gender,
@@ -287,66 +369,30 @@ export default function ManageCreators() {
                                 internalNotes,
                                 activated,
                                 assignEmployee,
-                                imageSrc,
+                                creatorImage,
+                                creatorComission,
+                                agencyComission,
                                 status,
                                 ofcreds,
-                              })
-                            }
-                            size="small"
+                                proxy,
+                              });
+                              setOpenAddCreater(true);
+                            }}
                           >
-                            Link
-                          </Button>
-                        )}
-                      </Typography>
-                    </TableCell>
-                    <TableCell>
-                      {assignEmployee
-                        ?.map((employee: any) => {
-                          return `${employee.name} `;
-                        })
-                        .join(', ')}
-                    </TableCell>
-                    <TableCell>
-                      <Typography variant="body2">OnlyManager Proxy</Typography>
-                      <Typography variant="caption">107.175.227.145</Typography>
-                    </TableCell>
-                    <TableCell>
-                      {status ? <Activated /> : <DeactivatedSvg />}
-                    </TableCell>
-                    <TableCell align="right">
-                      <Stack spacing={2} direction="row" alignItems="center">
-                        <ButtonBase
-                          onClick={() => {
-                            setFormType('edit');
-                            setSelectedCreator({
-                              creatorName: name,
-                              autoRelink,
-                              gender,
-                              id,
-                              internalNotes,
-                              activated,
-                              assignEmployee,
-                              imageSrc,
-                              status,
-                              ofcreds,
-                              proxy,
-                            });
-                            setOpenAddCreater(true);
-                          }}
-                        >
-                          <Typography variant="body1">Edit</Typography>
-                        </ButtonBase>
-                        <ButtonBase>
-                          <MenuButton
-                            title="More"
-                            tabData={getOptions(status)}
-                            id={id}
-                            status={status}
-                          />
-                        </ButtonBase>
-                      </Stack>
-                    </TableCell>
-                  </TableRow>
+                            <Typography variant="body1">Edit</Typography>
+                          </ButtonBase>
+                          <ButtonBase>
+                            <MenuButton
+                              title="More"
+                              tabData={getOptions(status)}
+                              id={id}
+                              status={status}
+                            />
+                          </ButtonBase>
+                        </Stack>
+                      </TableCell>
+                    </TableRow>
+                  </>
                 )
               )}
             </>

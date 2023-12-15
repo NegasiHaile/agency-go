@@ -336,10 +336,8 @@ const AddShifts = ({ open, type, setOpen, refetch }: $props) => {
     }));
   };
 
-
   const theme = useTheme();
   const isDarkTheme = theme.palette.mode === 'dark';
-
 
   return (
     <Overlay

@@ -13,4 +13,4 @@ export type TMutationService =
   | 'update-creator'
   | 'delete-creator';
 // after create services get need to add here without prefix request or response
-export type TQueryService = 'user' | 'verify' | 'get-employee' | 'get-creator'|'get-agencyById';
+export type TQueryService = 'user' | 'verify' | 'get-employee' | 'get-creator' | 'get-agencyById' | 'get-earnings';

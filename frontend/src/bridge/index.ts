@@ -1,11 +1,14 @@
-import { BrowserView, BrowserWindow, ipcMain, session } from 'electron';
+import { BrowserView, BrowserWindow, ipcMain, app } from 'electron';
 import chalk from 'chalk';
 import puppeteer, { Browser } from 'puppeteer';
-import { IPCChannels } from '../types';
-import * as pie from '../packages/electron-puppeteer';
 import locateChrome from 'locate-chrome';
 import log from 'electron-log';
 import UserAgent from 'user-agents';
+import Store from 'electron-store';
+import { v4 } from 'uuid';
+import path from 'path';
+
+const es = new Store();
 
 const getPageUrl = (page: any) => {
   const urls = [
@@ -54,190 +57,219 @@ const getPageUrl = (page: any) => {
   }
 };
 
-const startIPCBridge = ({
-  mainWindow,
-  ofBrowser,
-}: {
-  mainWindow: BrowserWindow;
-  ofBrowser: Browser;
-}) => {
-  let ofBrowserView: BrowserView | null = null;
-  // eslint-disable-next-line no-console
+const startIPCBridge = () => {
   console.log(chalk.bgYellow('IPC Bridge Started'));
 
   const fingerprintUrl = 'https://bot.sannysoft.com/';
   // https://antoinevastel.com/bots/
 
-  ipcMain.on('launch-anty-browser', async (e, arg) => {
+  ipcMain.on('anty-browser:launch', async (e, arg) => {
     try {
-      const proxyConfig = {
-        address: 'geo.iproyal.com',
-        port: 12321,
-        credentials: {
-          username: 'ryb6AD',
-          password: 'ryb6AD',
-        },
-      };
+      const mockLocation =
+        arg.geolocation && 'lat' in arg.geolocation ? true : false;
+      const isProxy = arg.proxy && 'host' in arg.proxy ? true : false;
+
+      const pptrArgs = [
+        '--start-maximized',
+        '--disable-blink-features=AutomationControlled',
+      ];
+
+      isProxy &&
+        pptrArgs.push(`--proxy-server=${arg.proxy.host}:${arg.proxy.port}`);
 
       const browser = await puppeteer.launch({
         headless: false,
         defaultViewport: null,
         ignoreDefaultArgs: ['--enable-automation'],
-        args: [
-          '--start-maximized',
-          '--disable-blink-features=AutomationControlled',
-          // `--proxy-server=${proxyConfig.address}:${proxyConfig.port}`,
-        ],
+        args: pptrArgs,
         executablePath: await locateChrome(),
+        userDataDir: path.join(
+          app.getPath('userData'),
+          'anty-browser-data' + arg.id
+        ),
       });
 
       const ua = new UserAgent({
         deviceCategory: 'desktop',
+        platform: arg.platform,
       });
 
       browser.on('targetcreated', async (target) => {
         if (target.type() === 'page') {
           const randomizedUserAgent = ua.random();
           const newPage = await target.page();
-          await Promise.all([
-            await page.setJavaScriptEnabled(false),
-            // Set the geolocation for the new page
-            await newPage?.setGeolocation({
-              latitude: 59.95,
-              longitude: 30.31667,
-            }),
+          const promiseChain = [
             await newPage?.setUserAgent(randomizedUserAgent.data.userAgent),
             await page.evaluateOnNewDocument(() => {
               if (navigator.webdriver) {
                 delete Object.getPrototypeOf(navigator).webdriver;
               }
             }),
-          ]);
+          ];
+
+          if (mockLocation) {
+            promiseChain.push(
+              await newPage?.setGeolocation({
+                latitude: arg.geolocation.lat,
+                longitude: arg.geolocation.lng,
+              })
+            );
+          }
+
+          await Promise.all(promiseChain);
         }
       });
 
-      const page = await browser.newPage();
-
+      const page = (await browser.pages())[0] || await browser.newPage();
       page.setDefaultNavigationTimeout(60000);
-      // await page.authenticate({
-      //   username: proxyConfig.credentials.username,
-      //   password: proxyConfig.credentials.password,
-      // });
+      isProxy &&
+        (await page.authenticate({
+          username: arg.proxy.username,
+          password: arg.proxy.password,
+        }));
       await page.goto('https://bot.sannysoft.com/');
     } catch (err) {
       log.error(err);
     }
   });
 
-  ipcMain.on('attempt-login' as IPCChannels, async (e, arg) => {
-    try {
-      console.log(arg);
-      ofBrowserView = new BrowserView({
-        webPreferences: {
-          partition: 'persist:' + arg.creatorId,
-        },
-      });
-
-      const proxyURL = `${arg.proxy.hostname}:${arg.proxy.port}`;
-
-      mainWindow.addBrowserView(ofBrowserView);
-      /* ofBrowserView.setBounds({
-        x: -999999,
-        y: -999999, 
-        width: 894,
-        height: 789
-      }) */
-      ofBrowserView.setBounds(arg.bounds);
-
-      const [_, partitionCookies, page] = await Promise.all([
-        session.fromPartition('persist:' + arg.creatorId).setProxy({
-          proxyRules: proxyURL,
-        }),
-        session
-          .fromPartition('persist:' + arg.creatorId)
-          .cookies.get({ name: 'auth_id' }),
-        pie.getPage(ofBrowser, ofBrowserView),
-      ]);
-
-      const isLogged = partitionCookies.length;
-
-      isLogged && ofBrowserView?.setBounds(arg.bounds);
-
-      await page.authenticate({
-        username: arg.proxy.username,
-        password: arg.proxy.password,
-      });
-
-      // ofBrowserView?.setBounds(arg.bounds)
-      // return await page.goto('https://iproyal.com/ip-lookup/');
-
-      const pageUrl = getPageUrl(arg.page);
-      await page.goto(pageUrl as string);
-      await page.waitForNavigation({ waitUntil: 'load' });
-      await page.addStyleTag({
-        content: `
-          header { display: none !important; }
-          .v-input__append-outer { display: none !important; }
-        `,
-      });
-
-      const loginOFAccount = async () => {
-        console.log('Need to login');
-
-        await Promise.all([
-          page.waitForSelector('input[at-attr="input"][name="email"]', {
-            timeout: 5000,
-          }),
-          page.waitForSelector('input[at-attr="input"][name="password"]', {
-            timeout: 5000,
-          }),
-          page.waitForSelector('button[at-attr="submit"][type="submit"]', {
-            timeout: 5000,
-          }),
-        ]);
-
-        await page.type('input[at-attr="input"][name="email"]', arg.email);
-        await page.type(
-          'input[at-attr="input"][name="password"]',
-          arg.password
-        );
-        await page.click('button[at-attr="submit"][type="submit"]');
-
-        // Check if the captcha element is present
-        await page.waitForSelector('iframe[title="reCAPTCHA"]', {
-          timeout: 10000,
-        });
-
-        const captcha = await page.$('iframe[title="reCAPTCHA"]');
-
-        if (captcha) {
-          console.log('Captcha is there', captcha);
-        } else {
-          await page.waitForSelector('input[at-attr="input"][name="email"]', {
-            timeout: 5000,
-          }),
-            console.log('Captcha is not there');
-        }
-      };
-
-      if (!partitionCookies.length) {
-        ofBrowserView?.setBounds(arg.bounds);
-        await loginOFAccount();
-        return;
-      }
-
-      console.log('Already logged in');
-    } catch (err) {
-      console.log(err);
+  ipcMain.handle('anty-browser:create-profile', (e, arg) => {
+    const existingProfiles = es.get('antyBrowser.profiles');
+    const id = v4();
+    if (!existingProfiles || !existingProfiles.length) {
+      es.set('antyBrowser.profiles', [Object.assign(arg, { id })]);
+      return true;
     }
+    es.set(
+      'antyBrowser.profiles',
+      existingProfiles.concat(Object.assign(arg, { id }))
+    );
+    return true;
   });
 
-  ipcMain.on('remove-browser-view', () => {
-    if (ofBrowserView) {
-      mainWindow.removeBrowserView(ofBrowserView);
-      ofBrowserView = null;
-    }
+  ipcMain.handle('anty-browser:get-profiles', (e) => {
+    const existingProfiles = es.get('antyBrowser.profiles');
+    if (existingProfiles && existingProfiles.length) return existingProfiles;
+    return [];
   });
+
+  ipcMain.handle('anty-browser:delete-profile', (e, id) => {
+    const existingProfiles = es.get('antyBrowser.profiles') as Array<any>;
+    // Delete the item from the array
+    const filtered = existingProfiles.filter((item) => item.id !== id);
+    // Save the updated array back to Electron Store
+    es.set('antyBrowser.profiles', filtered);
+    return true;
+  });
+
+  // ipcMain.on('attempt-login' as IPCChannels, async (e, arg) => {
+  //   try {
+  //     ofBrowserView = new BrowserView({
+  //       webPreferences: {
+  //         partition: 'persist:' + arg.creatorId,
+  //       },
+  //     });
+
+  //     // const proxyURL = `${arg.proxy.hostname}:${arg.proxy.port}`;
+  //     mainWindow.addBrowserView(ofBrowserView);
+  //     /* ofBrowserView.setBounds({
+  //       x: -999999,
+  //       y: -999999, 
+  //       width: 894,
+  //       height: 789
+  //     }) */
+  //     ofBrowserView.setBounds(arg.bounds);
+  //     const page = await pie.getPage(ofBrowser, ofBrowserView);
+
+  //     // const [_, partitionCookies, page] = await Promise.all([
+  //     //   // session.fromPartition('persist:' + arg.creatorId).setProxy({
+  //     //   //   proxyRules: proxyURL,
+  //     //   // }),
+  //     //   session
+  //     //     .fromPartition('persist:' + arg.creatorId)
+  //     //     .cookies.get({ name: 'auth_id' }),
+  //     //   pie.getPage(ofBrowser, ofBrowserView),
+  //     // ]);
+
+  //     // const isLogged = partitionCookies.length;
+
+  //     // isLogged && ofBrowserView?.setBounds(arg.bounds);
+
+  //     // await page.authenticate({
+  //     //   username: arg.proxy.username,
+  //     //   password: arg.proxy.password,
+  //     // });
+
+  //     // ofBrowserView?.setBounds(arg.bounds)
+  //     // return await page.goto('https://iproyal.com/ip-lookup/');
+
+  //     const pageUrl = getPageUrl(arg.page);
+  //     await page.goto(pageUrl as string);
+  //     await page.waitForNavigation({ waitUntil: 'load' });
+  //     await page.addStyleTag({
+  //       content: `
+  //         header { display: none !important; }
+  //         .v-input__append-outer { display: none !important; }
+  //       `,
+  //     });
+
+  //     const loginOFAccount = async () => {
+  //       console.log('Need to login');
+
+  //       await Promise.all([
+  //         page.waitForSelector('input[at-attr="input"][name="email"]', {
+  //           timeout: 5000,
+  //         }),
+  //         page.waitForSelector('input[at-attr="input"][name="password"]', {
+  //           timeout: 5000,
+  //         }),
+  //         page.waitForSelector('button[at-attr="submit"][type="submit"]', {
+  //           timeout: 5000,
+  //         }),
+  //       ]);
+
+  //       await page.type('input[at-attr="input"][name="email"]', arg.email);
+  //       await page.type(
+  //         'input[at-attr="input"][name="password"]',
+  //         arg.password
+  //       );
+  //       await page.click('button[at-attr="submit"][type="submit"]');
+
+  //       // Check if the captcha element is present
+  //       await page.waitForSelector('iframe[title="reCAPTCHA"]', {
+  //         timeout: 10000,
+  //       });
+
+  //       const captcha = await page.$('iframe[title="reCAPTCHA"]');
+
+  //       if (captcha) {
+  //         console.log('Captcha is there', captcha);
+  //       } else {
+  //         await page.waitForSelector('input[at-attr="input"][name="email"]', {
+  //           timeout: 5000,
+  //         }),
+  //           console.log('Captcha is not there');
+  //       }
+  //     };
+
+  //     // if (!partitionCookies.length) {
+  //       // ofBrowserView?.setBounds(arg.bounds);
+  //       await loginOFAccount();
+  //       return;
+  //     // }
+
+  //     console.log('Already logged in');
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // });
+
+  // ipcMain.on('remove-browser-view', () => {
+  //   if (ofBrowserView) {
+  //     mainWindow.removeBrowserView(ofBrowserView);
+  //     ofBrowserView = null;
+  //   }
+  // });
 };
 
 export default startIPCBridge;

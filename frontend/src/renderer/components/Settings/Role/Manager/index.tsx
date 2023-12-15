@@ -5,6 +5,7 @@ import Home from './Sections';
 import Sections from './Sections';
 interface TabProps {
   handleTabChange: (name: string) => void;
+  t:any
 }
 
 interface ChildState {
@@ -20,7 +21,7 @@ interface ParentState {
   [parentKey: string]: ChildrenState;
 }
 function RoleManager(props: TabProps) {
-  const { handleTabChange } = props;
+  const { handleTabChange, t } = props;
  
 
   return (
@@ -30,7 +31,7 @@ function RoleManager(props: TabProps) {
           className={classes.homeText}
           onClick={() => handleTabChange('Role')}
         >
-          Role management
+          {t("Role management")}
         </div>
         <div>Manager </div>
       </div>

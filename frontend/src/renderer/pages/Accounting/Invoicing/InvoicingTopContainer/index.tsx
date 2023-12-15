@@ -13,56 +13,46 @@ import CreateInvoiceModal from '../CreateInvoiceModal';
 import CustomInvoiceModal from '../CustomInvoiceModal';
 import AvatarSvg from 'renderer/assets/svg/AvatarSvg';
 import { MyInvoiceContext } from '../context/context';
+import { agencyCreatorSplit, randomNumber } from '..';
 
-const InvoicingTopContainer = () => {
+interface Props {
+  allUsers: [];
+}
+const InvoicingTopContainer = ({allUsers}: Props) => {
   const [isCreateInvoiceModalOpen, setCreateInvoiceModalOpen] = useState(false);
   const [customer, setCustomer] = useState('');
   const [isCustomInvoiceModalOpen, setCustomInvoiceModalOpen] = useState(false);
   const [selectData, setSelectedData] = useState('Current invoice settings');
-  const handleOpen = () => setCreateInvoiceModalOpen(true);
-  const [alluser, setAlluser] = useState<any>([]);
+  const {data, setData} = useContext(MyInvoiceContext);
 
-  const { data } = useContext(MyInvoiceContext);
-  // console.debug(data?.data?.currentModalBalance, 'data');
+  const handleOpen = () => setCreateInvoiceModalOpen(true);
+
+  useEffect(()=>{
+    setSelectedData('Current invoice settings');
+  }, [])
+
+  const handleSelectUser = (userData: any)=>{
+    setData({
+      ...(userData as {}), 
+      currentModalBalance: userData?.currentModalBalance?? randomNumber(25000, 1000),
+      agencyPer: userData?.agencyPer?? agencyCreatorSplit()});
+  }
 
   const cardData = [
     {
       id: 1,
       title: 'Current Model Balance',
-      value: data?.data?.currentModalBalance || ' 20000',
+      value: data?.currentModalBalance,
     },
     {
       id: 2,
       title: 'Agency/Model Split (%)',
-      value: data?.data?.agencyPer || '30/70 ',
+      value: data?.agencyPer,
     },
   ];
-  const getuser = async () => {
-    const options = {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    };
-    try {
-      const response = await fetch('http://localhost:3000/users', options);
-      if (response.ok) {
-        const data = await response.json();
-        setAlluser(data?.data);
-        console.log(data, 'get user Data');
-      } else {
-        console.error('Failed to create the user');
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-  useEffect(() => {
-    getuser();
-  }, []);
 
-const theme = useTheme();
-const isDarkTheme = theme.palette.mode === 'dark';
+  const theme = useTheme();
+  const isDarkTheme = theme.palette.mode === 'dark';
 
   return (
     <Box margin={'10px 0px'}>
@@ -75,21 +65,20 @@ const isDarkTheme = theme.palette.mode === 'dark';
             sx={{ color: '#fff', textTransform: 'capitalize', height: '40px' }}
             onClick={handleOpen}
           >
-            Create Invoice{' '}
+            Create Invoice
           </Button>
           <Select
             id="current-invoice-settings"
             value={selectData}
             onChange={(e) => setSelectedData(e.target.value)}
             sx={{
-              
               width: 'fit-content',
               '.MuiOutlinedInput-notchedOutline': {
-                
+                borderColor: theme.palette.secondary.light,
               },
-              height: 'fit-content',
+              height: '100%',
               padding: '0px 0px',
-              ' & .MuiOutlinedInput-input':
+              ' & .css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input':
                 {
                   padding: '4px 8px',
                 },
@@ -99,7 +88,7 @@ const isDarkTheme = theme.palette.mode === 'dark';
               '&:hover .MuiOutlinedInput-notchedOutline': {
                 borderColor: theme.palette.secondary.contrastText,
               },
-             
+
               '& .MuiSelect-select': {
                 display: 'flex',
                 gap: '5px',
@@ -113,13 +102,13 @@ const isDarkTheme = theme.palette.mode === 'dark';
             <MenuItem
               value={'Current invoice settings'}
               sx={{ fontWeight: 500, fontSize: '11px' }}
-              onClick={() => setCustomInvoiceModalOpen(true)}
             >
               Current Invoice Setting
             </MenuItem>
-            {alluser.map((item: any, index: any) => (
+            {allUsers.map((item: any, index: any) => (
               <MenuItem
-                value={`${item?.firstName} ${item?.lastName}`}
+                key={index}
+                value={`${item?._id}`}
                 sx={{
                   fontWeight: 500,
                   fontSize: '11px',
@@ -128,7 +117,7 @@ const isDarkTheme = theme.palette.mode === 'dark';
                   alignItems: 'center',
                 }}
                 onClick={() => (
-                  setCustomInvoiceModalOpen(true), setCustomer(item)
+                  setCustomInvoiceModalOpen(true), setCustomer(item), handleSelectUser(item)
                 )}
               >
                 <AvatarSvg />
@@ -139,10 +128,10 @@ const isDarkTheme = theme.palette.mode === 'dark';
         </Box>
       </Box>
       <Box display={'flex'} gap={'10px'} margin={'16px 0px'}>
-        {cardData.map((data) => {
+        {cardData.map((data, index) => {
           return (
             <Stack
-              key={data.id}
+              key={index}
               width={'50%'}
               flexDirection="row"
               borderRadius="16px"
@@ -191,6 +180,7 @@ const isDarkTheme = theme.palette.mode === 'dark';
           open={isCustomInvoiceModalOpen}
           setOpen={setCustomInvoiceModalOpen}
           userData={customer}
+          setCreateInvoiceModalOpen={setCreateInvoiceModalOpen}
         />
       )}
     </Box>

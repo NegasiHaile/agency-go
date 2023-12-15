@@ -8,8 +8,8 @@ export const groupList = [
     value: 'manager',
   },
   {
-    label: 'Chatter',
-    value: 'chatter',
+    label: 'Employee',
+    value: 'employee',
   },
 ];
 
@@ -23,15 +23,27 @@ export const roleList = [
     value: 'manager',
   },
   {
-    label: 'Chatter',
-    value: 'chatter',
+    label: 'Employee',
+    value: 'employee',
   },
 ];
 
 export const frequencyList = [
   {
+    label: 'Hourly',
+    value: 'hourly',
+  },
+  {
+    label: 'Daily',
+    value: 'daily',
+  },
+  {
     label: 'Weekly',
     value: 'weekly',
+  },
+  {
+    label: 'Bi Weekly',
+    value: 'bi weekly',
   },
   {
     label: 'Monthly',
@@ -48,4 +60,15 @@ export const scheduleList = [
     label: 'Night',
     value: 'night',
   },
-]
+];
+
+export const antyBrowserProfileStatusList = [
+  {
+    label: 'Ready',
+    value: 'ready',
+  },
+  {
+    label: 'Banned',
+    value: 'banned',
+  },
+];

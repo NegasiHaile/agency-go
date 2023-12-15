@@ -24,7 +24,13 @@ const style = {
   borderRadius: 2,
 };
 
-export default function NewProfile({ open, setOpen, name, id }: any) {
+export default function NewProfile({
+  open,
+  setOpen,
+  name,
+  id,
+  increaseFetchIndex,
+}: any) {
   const [selectedValues, setSelectedValues] = useState([]);
   const [formData, setFormData] = useState(null);
   const [newData, setNewData] = useState(null);
@@ -35,39 +41,9 @@ export default function NewProfile({ open, setOpen, name, id }: any) {
 
   const handleFormSubmitRef = useRef(null);
 
-  const handleAssignCreator = (id: string) => {
-    const payload = selectedValues;
-    let endpoint = `employee/${id}`;
-    let options = {
-      method: 'PUT' as 'PUT',
-      headers: {
-        'content-type': 'application/json',
-      },
-      withAuth: true,
-      body: JSON.stringify(payload),
-    };
-    fetchReq(endpoint, options)
-      .then((response) => response.json())
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log('Error occured: ', err);
-      });
-    handleClose();
-  };
-
-  // Function to handle form submission triggered from NewProfile component
-  const handleFormSubmitFromNewProfile = (data) => {
-    // Handle form submission or send the form data wherever needed
-    console.log('Form Data from NewProfile:', data);
-    setFormData(data); // Update state with form data if needed
-  };
-
   const handleCreate = () => {
     // Call handleFormSubmit in General component from NewProfile
     // handleFormSubmitFromNewProfile(formData);
-    console.log('--handleFormSubmitRef.current--', handleFormSubmitRef.current);
     if (handleFormSubmitRef.current) {
       handleFormSubmitRef.current?.handleFormSubmit();
     }
@@ -113,9 +89,9 @@ export default function NewProfile({ open, setOpen, name, id }: any) {
     setValue(newValue);
   };
 
-  const dataRef = (newData) => {
-    // setNewData(newData);
-  };
+  // const dataRef = (newData) => {
+  //    setNewData(newData);
+  // };
 
   // console.log('--newData--', newData);
 
@@ -145,36 +121,8 @@ export default function NewProfile({ open, setOpen, name, id }: any) {
               justifyContent={'space-between'}
               paddingLeft={'20px'}
             >
-              <Box display={'flex'} gap={'10px'} marginTop={'20px'}>
-                <Typography
-                  sx={{
-                    backgroundColor: '#fff',
-                    borderRadius: '10px 10px 0 0',
-                    padding: '10px',
-                  }}
-                >
-                  New Profile
-                </Typography>
-
-                <Typography
-                  sx={{
-                    color: '#fff',
-                    borderRadius: '10px 10px 0 0',
-                    padding: '10px',
-                  }}
-                >
-                  Mass Import
-                </Typography>
-              </Box>
+              <Box display={'flex'} gap={'10px'} marginTop={'20px'}></Box>
               <Box display={'flex'}>
-                <Button
-                  variant="text"
-                  startIcon={<CachedIcon />}
-                  sx={{ color: '#fff' }}
-                >
-                  New fingerprint
-                </Button>
-
                 <Button
                   variant="text"
                   startIcon={<AddIcon />}
@@ -202,27 +150,21 @@ export default function NewProfile({ open, setOpen, name, id }: any) {
               value={value}
               onChange={handleChange}
               aria-label="basic tabs example"
+              style={{ display: 'none' }}
             >
               <Tab label="General" {...a11yProps(0)} />
-              <Tab label="Additional" {...a11yProps(1)} />
-              <Tab label="User data" {...a11yProps(2)} />
             </Tabs>
           </Box>
           <Box bgcolor={isDarkTheme ? '#0C0C0C' : '#fff'}>
             <CustomTabPanel value={value} index={0}>
               <Box>
                 <General
-                
+                  setOpen={setOpen}
                   handleFormSubmitRef={handleFormSubmitRef}
+                  increaseFetchIndex={increaseFetchIndex}
                 />
               </Box>
             </CustomTabPanel>
-            <CustomTabPanel value={value} index={1}>
-              Item Two
-            </CustomTabPanel>
-            <CustomTabPanel value={value} index={2}>
-              Item Three
-            </CustomTabPanel>{' '}
           </Box>
         </Box>
       </Modal>

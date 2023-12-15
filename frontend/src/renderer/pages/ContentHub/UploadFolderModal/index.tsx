@@ -8,9 +8,16 @@ import styles from '../styles.module.css';
 import theme from 'renderer/styles/muiTheme';
 import Dropzone from 'react-dropzone';
 import BackupOutlinedIcon from '@mui/icons-material/BackupOutlined';
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import {
+  S3Client,
+  PutObjectCommand,
+  GetObjectCommand,
+} from '@aws-sdk/client-s3';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import { string } from 'yup';
+import { uploadContent } from 'services/content';
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -33,6 +40,7 @@ export default function UploadFolderModal({
   selectedCreator,
   loadData,
   getImagesInFolder,
+  creatorData,
 }: any) {
   const [foldername, setfoldername] = useState('');
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
@@ -97,6 +105,7 @@ export default function UploadFolderModal({
     setNewFolder(e.target.value);
   };
   const onDrop = (acceptedFiles: File[]) => {
+    console.log(acceptedFiles);
     setSelectedFiles(acceptedFiles);
     console.log('Selected Files:', acceptedFiles);
   };
@@ -109,6 +118,22 @@ export default function UploadFolderModal({
   const handleFileSelect = (e: any) => {
     setSelectedFile(e.target.files[0]);
   };
+
+  const createPresignedUrl = async (key: string) => {
+    const expiresInSeconds = 7 * 24 * 60 * 60; // 7 days is the max
+    const command = new GetObjectCommand({
+      Bucket: 'dropbox-demo',
+      Key: key,
+    });
+    const url = await getSignedUrl(s3Client, command, {
+      expiresIn: expiresInSeconds,
+    });
+    return url;
+  };
+  function getFileExtension(filename: string) {
+    const parts = filename.split('.');
+    return parts.length > 1 ? parts[parts.length - 1] : '';
+  }
 
   const handleUpload = async () => {
     const uploadToFolder = newFolder ? `${newFolder}` : `${foldername}`;
@@ -127,16 +152,31 @@ export default function UploadFolderModal({
     });
 
     for (const selectedFile of selectedFiles) {
+      const key = `${selectedCreator}/${uploadToFolder}/${selectedFile.name}`;
       const params = {
         Bucket: 'dropbox-demo',
-        Key: `${selectedCreator}/${uploadToFolder}/${selectedFile.name}`,
+        Key: key,
         Body: selectedFile,
       };
       console.log(`${selectedCreator}/${uploadToFolder}/${selectedFile.name}`);
+
       try {
         const data = await s3Client.send(new PutObjectCommand(params));
         console.log('Successfully uploaded file to S3', data);
+        const presignUrl = await createPresignedUrl(key);
 
+        const payload = {
+          createorId: selectedCreator,
+          creatorEmail: creatorData.filter((e) => e._id === selectedCreator)[0]
+            .ofcreds.email,
+          fileName: selectedFile.name,
+          mimeType: getFileExtension(selectedFile.name),
+          imageKey: key,
+          presignUrl: presignUrl,
+          bucketName: params.Bucket,
+          folderName: uploadToFolder,
+        };
+        const response = await uploadContent(payload);
         openSnackbar('Image uploaded successfully');
       } catch (error) {
         console.error('Error uploading file to S3', error);
@@ -275,7 +315,7 @@ export default function UploadFolderModal({
               />
             </Box>
           )}
-          <Dropzone minSize={1000000} maxSize={104857600} onDrop={onDrop}>
+          <Dropzone minSize={0} maxSize={104857600} onDrop={onDrop}>
             {({ getRootProps, getInputProps }) => (
               <section>
                 <div {...getRootProps()}>

@@ -10,7 +10,7 @@ export default function Activated() {
       <path
         d="M17.98 11.29V15.29C17.98 15.55 17.97 15.8 17.94 16.04C17.71 18.74 16.12 20.08 13.19 20.08H12.79C12.54 20.08 12.3 20.2 12.15 20.4L10.95 22C10.42 22.71 9.56 22.71 9.03 22L7.82999 20.4C7.69999 20.23 7.41 20.08 7.19 20.08H6.79001C3.60001 20.08 2 19.29 2 15.29V11.29C2 8.36001 3.35001 6.77001 6.04001 6.54001C6.28001 6.51001 6.53001 6.5 6.79001 6.5H13.19C16.38 6.5 17.98 8.10001 17.98 11.29Z"
         stroke="white"
-        stroke-width="1.5"
+        strokeWidth="1.5"
         stroke-miterlimit="10"
         stroke-linecap="round"
         stroke-linejoin="round"
@@ -18,7 +18,7 @@ export default function Activated() {
       <path
         d="M21.9791 7.29001V11.29C21.9791 14.23 20.6291 15.81 17.9391 16.04C17.9691 15.8 17.9791 15.55 17.9791 15.29V11.29C17.9791 8.10001 16.3791 6.5 13.1891 6.5H6.78906C6.52906 6.5 6.27906 6.51001 6.03906 6.54001C6.26906 3.85001 7.85906 2.5 10.7891 2.5H17.1891C20.3791 2.5 21.9791 4.10001 21.9791 7.29001Z"
         stroke="white"
-        stroke-width="1.5"
+        strokeWidth="1.5"
         stroke-miterlimit="10"
         stroke-linecap="round"
         stroke-linejoin="round"
@@ -26,21 +26,21 @@ export default function Activated() {
       <path
         d="M13.4955 13.75H13.5045"
         stroke="white"
-        stroke-width="2"
+        strokeWidth="2"
         stroke-linecap="round"
         stroke-linejoin="round"
       />
       <path
         d="M9.9955 13.75H10.0045"
         stroke="white"
-        stroke-width="2"
+        strokeWidth="2"
         stroke-linecap="round"
         stroke-linejoin="round"
       />
       <path
         d="M6.4955 13.75H6.5045"
         stroke="white"
-        stroke-width="2"
+        strokeWidth="2"
         stroke-linecap="round"
         stroke-linejoin="round"
       />

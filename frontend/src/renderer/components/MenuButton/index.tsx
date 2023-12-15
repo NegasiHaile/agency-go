@@ -66,7 +66,9 @@ export default function MenuButton({ title, tabData, id, status }: MenuProps) {
         {tabData.map((val: any) => {
           return (
             <MenuItem onClick={() => val.function(id, status)}>
-              {val.title}
+              <Typography color={val.title == 'Delete' ? 'red' : ''}>
+                {val.title}
+              </Typography>
             </MenuItem>
           );
         })}

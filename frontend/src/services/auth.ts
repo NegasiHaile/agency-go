@@ -62,13 +62,15 @@ const verifyRequest = async () => {
 
 const signupRequest = async (arg: any) => {
   try {
+    const payload = { ...arg, ...testSignUpConfig }
     const response = await fetch('signup', {
       method: 'POST',
-      body: JSON.stringify({ ...arg, ...testSignUpConfig }),
+      body: JSON.stringify(payload),
       headers: {
         'Content-Type': 'application/json',
       },
     });
+    console.log(response, 'response')
     if (response.ok) {
       let body = await response.json();
       

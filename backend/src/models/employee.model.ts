@@ -7,7 +7,7 @@ const EmployeeSchema: Schema<Employee> = new Schema({
     required: true,
   },
   password: {
-    type: String,
+    type: String || undefined || null,
   },
   email: {
     type: String,
@@ -25,13 +25,29 @@ const EmployeeSchema: Schema<Employee> = new Schema({
     ref: 'agencies',
     required: true,
   },
+  groupId: {
+    type: Schema.Types.ObjectId || '' || undefined || null,
+    ref: 'groups',
+  },
   role: {
     type: String,
-    enum: ['admin', 'chatter', 'manager'],
+    enum: ['employee', 'manager', 'admin'],
   },
   userId: {
     type: Schema.Types.ObjectId,
     ref: 'users',
+  },
+  payRate: {
+    type: Number,
+  },
+  payInterval: {
+    type: String,
+  },
+  commission: {
+    type: Number,
+  },
+  shiftSchedular: {
+    type: String,
   },
   status: {
     type: String,

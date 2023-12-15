@@ -11,9 +11,9 @@ function CheckSvg() {
       <path
         d="M11.8327 5.5L7.24935 10.0833L5.16602 8"
         stroke="white"
-        stroke-width="1.66667"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="1.66667"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <rect x="1" y="0.5" width="15" height="15" rx="7.5" stroke="#04A1FF" />
     </svg>

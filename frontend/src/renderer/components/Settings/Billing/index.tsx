@@ -6,6 +6,7 @@ import classes from './styles.module.css';
 import SubscriptionBilling from './SubscriptionBilling';
 import { useState } from 'react';
 import SettingBilling from './SettingBilling/Index';
+import { useTranslation } from 'react-i18next';
 
 interface TabProps {
   handleTabChange: (name: string) => void;
@@ -55,7 +56,7 @@ function Billing(props: TabProps) {
   
   const theme = useTheme();
   const isDarkTheme = theme.palette.mode === 'dark';
-
+  const { t } = useTranslation();
 
   return (
     <div className={classes.wrapper}>
@@ -75,13 +76,13 @@ function Billing(props: TabProps) {
             }}
             onClick={() => handleTabChange('SettingBilling')}
           >
-            Setting
+            {t("Setting")}
           </Button>
           <Button
             sx={{ backgroundColor: '#04A1FF', color: 'white' }}
             onClick={() => handleTabChange('SubscribeBilling')}
           >
-            Subscription
+            {t("Subscription")}
           </Button>
         </Box>
 

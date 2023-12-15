@@ -1,13 +1,16 @@
 .sidebar {
-  margin: 0px 8px;
+  /* margin: 0px 8px; */
   min-height: 100vh;
 }
+
 .brandLogo {
+  display: flex;
+  justify-content: center;
   border-bottom: 1px solid #04a1ff;
-  padding-bottom: 30px;
-  padding-top: 30px;
-  margin-left: 16px;
-  width: 46px;
+  padding-bottom: 9px;
+  padding-top: 20px;
+  /* margin-left: 16px; */
+  width: auto;
 }
 
 .sidebarItem {
@@ -16,6 +19,7 @@
   padding: 16px 0px;
   align-items: center;
 }
+
 .sidebarIcon {
   margin-bottom: 8px;
 }
@@ -36,12 +40,11 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border: 8px;
+  /* border: 8px; */
 }
 
 .optionItem {
-  padding: 16px 16px;
-
+  padding: 10px 10px;
   color: #aaa;
   font-size: 13px;
   font-weight: 600;
@@ -53,8 +56,9 @@
 .optionItem:last-child {
   border-bottom: none;
 }
+
 .sidebarItemWrapperDark {
- padding: 10px 8px 2px 20px;
+  padding: 10px 8px 2px 20px;
   margin-top: 10px;
 
   /* margin-bottom: 24px; */
@@ -63,10 +67,13 @@
 .sidebarItemWrapperDark:last-child {
   margin-bottom: 0px;
 }
+
 .sidebarItemWrapperDark:hover {
   border-radius: 8px;
   background: #04a1ff;
+  transition: 0s;
 }
+
 .sidebarItemWrapperActiveDark {
   border-radius: 8px;
   background: #04a1ff;
@@ -74,12 +81,13 @@
   margin-top: 10px;
   /* margin-bottom: 24px; */
 }
+
 .sidebarItemNav {
   text-decoration: none;
 }
 
 .sidebarItemWrapperLight {
- padding: 10px 8px 2px 20px;
+  padding: 10px 8px 2px 20px;
   margin-top: 10px;
   /* margin-bottom: 24px; */
 }
@@ -87,10 +95,13 @@
 .sidebarItemWrapperLight:last-child {
   margin-bottom: 0px;
 }
+
 .sidebarItemWrapperLight:hover {
   border-radius: 8px;
   background: #fff;
+  transition: 0s;
 }
+
 .sidebarItemWrapperActiveLight {
   border-radius: 8px;
   background: #fff;
@@ -100,16 +111,16 @@
 }
 
 .iconDark {
-  filter: brightness(0) saturate(100%) invert(100%) sepia(100%) saturate(0%)
-    hue-rotate(307deg) brightness(103%) contrast(101%);
+  filter: brightness(0) saturate(100%) invert(100%) sepia(100%) saturate(0%) hue-rotate(307deg) brightness(103%) contrast(101%);
 }
 
 .iconLight {
-  filter: brightness(0) saturate(100%) invert(45%) sepia(77%) saturate(1638%)
-    hue-rotate(176deg) brightness(99%) contrast(105%);
+  filter: brightness(0) saturate(100%) invert(45%) sepia(77%) saturate(1638%) hue-rotate(176deg) brightness(99%) contrast(105%);
 }
+
 .darkTheme {
-  background-color: #0c0c0c; /* Dark mode background color */
+  background-color: #0c0c0c;
+  /* Dark mode background color */
 }
 
 .lightTheme {
@@ -119,7 +130,9 @@
   padding-left: 10px;
   padding-right: 10px;
 }
+
 .drawer {
-  min-width: 240px; /* Adjust width as needed */
+  min-width: 240px;
+  /* Adjust width as needed */
   flex-shrink: 0;
 }

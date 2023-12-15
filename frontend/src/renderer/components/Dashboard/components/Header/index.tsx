@@ -2,7 +2,7 @@ import AffiliateSvg from 'renderer/assets/svg/affiliatesSvg';
 import InfoSvg from 'renderer/assets/svg/infoSvg';
 import NetworkSvg from 'renderer/assets/svg/networkSvg';
 import BellSvg from 'renderer/assets/svg/bellSvg';
-import ShieldSvg from 'renderer/assets/svg/shieldSvg';
+// import ShieldSvg from 'renderer/assets/svg/shieldSvg';
 import AvatarSvg from 'renderer/assets/svg/AvatarSvg';
 import LeftChevronSvg from 'renderer/assets/svg/leftChevronSvg';
 import RightChevronSvg from 'renderer/assets/svg/rightChevronSvg';
@@ -48,11 +48,11 @@ const navigationItemsConst = [
     icon: <BellSvg />,
     link: '/notification',
   },
-  {
-    name: '',
-    icon: <ShieldSvg />,
-    link: '/settings',
-  },
+  // {
+  //   name: '',
+  //   icon: <ShieldSvg />,
+  //   link: '/settings',
+  // },
 ];
 
 function NavigationItem(props: any) {

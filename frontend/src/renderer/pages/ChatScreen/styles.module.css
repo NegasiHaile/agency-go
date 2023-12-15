@@ -17,17 +17,22 @@
   background-color: var(--color-sub-background-border);
   border-radius: 4px;
 }
-.conversationButton{
+.conversationButton {
   border: 1px solid #3a3a3a !important;
   margin-bottom: 10px !important;
   width: 93% !important;
-  color: #fff !important;  
- }
- .checkboxLabel{
+  color: #fff !important;
+}
+.checkboxLabel {
   color: black !important;
-  display: flex; 
+  display: flex;
   align-items: center;
- }
- .pageAsideDiv{
-  width: 30% !important;
- }
+}
+.pageAsideDiv {
+  width: 33% !important;
+}
+.search {
+  display: flex !important;
+  gap: 5px;
+  padding: 5px 10px;
+}

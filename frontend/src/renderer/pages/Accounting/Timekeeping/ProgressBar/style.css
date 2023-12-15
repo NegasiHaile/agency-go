@@ -1,0 +1,35 @@
+.progress-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: transparent;
+    height: 20px;
+    position: relative;
+}
+
+.progress-bar-time {
+    position: absolute;
+    height: 100%;
+    transition: width 0.5s ease;
+    z-index: 1;
+}
+
+.progress-segment {
+    flex-grow: 1;
+    height: 100%;
+    border-right: 2px dashed #fff; /* White dashes */
+    z-index: 0;
+}
+
+/* Add more specific color styles for segments */
+.green {
+    background-color: #4CAF50; /* Green */
+}
+
+.red {
+    background-color: #f44336; /* Red */
+}
+
+.grey {
+    background-color: #808080; /* Grey */
+}

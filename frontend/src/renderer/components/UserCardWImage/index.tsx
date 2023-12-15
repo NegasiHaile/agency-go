@@ -3,21 +3,18 @@ import { Box, IconButton, Stack, Typography, useTheme } from '@mui/material';
 
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import styles from './styles.module.css';
-import { useContext, useEffect, useState } from 'react';
-
-import { MyInvoiceContext } from 'renderer/pages/Accounting/Invoicing/context/context';
+import { useEffect, useState } from 'react';
 
 interface $Props {
   name: string;
   profileImage: string;
   notificationCount?: number;
-  data: any;
+  data?: any;
   id: string;
-  selectName: any;
   messageCount?: number;
   selected: boolean;
-  onClick: () => void;
   autoRelink: boolean;
+  onClick?: ()=> void
 }
 export default function UserCardWImage({
   name,
@@ -25,7 +22,6 @@ export default function UserCardWImage({
   profileImage,
   data,
   id,
-  selectName,
   notificationCount,
   messageCount,
   selected,
@@ -39,14 +35,10 @@ export default function UserCardWImage({
   useEffect(() => {
     console.log('inner', selected);
   }, []);
-  const { setData } = useContext(MyInvoiceContext);
 
   const theme = useTheme();
   const isDarkTheme = theme.palette.mode === 'dark';
-
-  const selctfunction = (data: any) => {
-    selectName(data);
-  };
+ 
   return (
     <Box
       // spacing={1}
@@ -54,11 +46,7 @@ export default function UserCardWImage({
       justifyContent={'space-between'}
       alignItems={'center'}
       className={cardClass}
-      onClick={() => {
-        onClick;
-        selctfunction(data?.firstName);
-        setData(data);
-      }}
+      onClick={ onClick}
     >
       {profileImage !== '' ? (
         <img
@@ -76,12 +64,7 @@ export default function UserCardWImage({
         width={'100%'}
       >
         <Typography
-          onClick={() => {
-            console.log('set===== data', data);
-            setData(data);
-          }}
           variant="h3"
-        
           fontSize={'18px'}
           sx={{ cursor: 'pointer' }}
           fontWeight={500}
@@ -89,7 +72,7 @@ export default function UserCardWImage({
           {name}
         </Typography>
         <Box>
-          {notificationCount !== 0 && (
+          {(!!notificationCount) && (
             <IconButton
               className={styles.icon}
               sx={{

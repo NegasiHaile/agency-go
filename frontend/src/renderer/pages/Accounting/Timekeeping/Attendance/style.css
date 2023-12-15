@@ -1,0 +1,303 @@
+/* Attendence */
+.attendance-container {
+  background-color: #000;
+  color: white;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.attendence-layout {
+  padding: 20px;
+}
+
+.attendance-header {
+  font-size: 20px;
+  margin-bottom: 20px;
+  background-color: #333;
+  border-top-left-radius: 9px;
+  border-top-right-radius: 10px;
+  padding: 5px 15px;
+}
+
+/* Attendence Check */
+
+.button {
+  display: block;
+  margin: 10px 0;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
+}
+
+.clock-in {
+  /* background-color: #4caf50; Green */
+  display: table;
+  margin: 0px auto 15px;
+  border: none;
+  color: #fff;
+  border-radius: 5px;
+  padding: 6px 11px;
+  text-align: center;
+}
+.add-notes {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.add-notes input {
+  margin-right: 10px;
+  width: 160px;
+  height: 35px;
+  border-radius: 5px;
+  background-color: #000;
+  color: #fff;
+  border: 1px grey solid;
+  padding-left: 7px;
+}
+.clock-out {
+  background-color: #f44336; /* Red */
+  border: none;
+  color: #fff;
+  border-radius: 5px;
+  padding: 6px 11px;
+}
+
+.start-break {
+  border: 2px dotted #ffeb3b; /* Yellow */
+  background-color: transparent;
+  color: #fff;
+  border-radius: 5px;
+  padding: 6px 11px;
+}
+
+.end-break {
+  border: 2px dotted #000; /* Yellow */
+  background-color: #ffeb3b;
+  color: #000;
+  border-radius: 5px;
+  padding: 6px 11px;
+}
+
+.end-break-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.add-note {
+  background-color: #2196f3; /* Blue */
+  border: none;
+  color: #fff;
+  border-radius: 5px;
+  padding: 10px 11px;
+}
+
+.timer {
+  font-size: 32px;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.mb-0 {
+  margin-bottom: 0px;
+}
+
+.checked-in-msg {
+  color: #ffeb3b;
+  margin: 20px 0;
+  text-align: center;
+  font-size: 14px;
+}
+
+.shift-log {
+  margin-top: 20px;
+}
+
+.shift-txt {
+  text-align: center;
+  font-size: 12px;
+}
+
+.shift-progress {
+  /* Style for shift progress bar */
+}
+.clock-out-btn-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+  gap: 20px;
+}
+.progress-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: transparent;
+  height: 2px;
+  position: relative;
+}
+.progress-bar-bottom {
+  display: flex;
+  justify-content: space-between;
+}
+.timekeep-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  /* background-color: #000; */
+  margin: 15px 10px 12px 10px;
+  padding: 9px;
+  font-size: 20px;
+  border-radius: 10px;
+}
+
+/* Timesheet Table */
+
+.timesheet-container {
+  background-color: #000;
+  color: white;
+  border-radius: 8px;
+  font-family: Arial, sans-serif;
+}
+
+.timesheet-table {
+  margin-top: 0px;
+}
+
+.timesheet-table th {
+  border: none;
+  padding: 8px 15px;
+}
+
+.timesheet-table thead {
+  background-color: #121212;
+}
+
+.date {
+  margin-bottom: 20px;
+  text-align: center;
+  color: gray;
+  font-size: 12px;
+}
+
+.attendence-tbl-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #333333;
+  border-top-left-radius: 9px;
+  border-top-right-radius: 10px;
+}
+.progress-bar-bottom span {
+  font-size: 12px;
+}
+.progress-bar-time {
+  position: absolute;
+  height: 100%;
+  transition: width 0.5s ease;
+  z-index: 1;
+}
+
+.progress-segment {
+  flex-grow: 1;
+  height: 100%;
+  border-right: 3px dashed #000;
+  z-index: 0;
+}
+
+.left-date-picker .MuiInput-root input {
+  background-color: #000;
+  font-size: 14px;
+  padding: 0px;
+  width: 95px;
+  margin-right: -10px;
+  color: #ffff;
+}
+.left-date-picker svg {
+  display: none;
+}
+.left-date-picker .MuiInput-root button {
+  background-color: transparent;
+  width: 103px;
+  right: 11px;
+  position: absolute;
+}
+.left-date-picker .MuiInput-root button:hover {
+  background-color: transparent;
+}
+.left-date-picker .css-59p9m6-MuiInputBase-root-MuiInput-root:before {
+  border-bottom: none;
+  display: none;
+}
+.left-date-picker .css-59p9m6-MuiInputBase-root-MuiInput-root:after {
+  display: none;
+}
+
+.right-date-picker .MuiInputBase-root input {
+  background-color: #000;
+  font-size: 14px;
+  padding: 0px;
+  border: none;
+  width: 80px;
+  margin: -13px;
+  color: #ffff;
+}
+.right-date-picker .MuiInputBase-root {
+  border: none;
+}
+.right-date-picker .css-59p9m6-MuiInputBase-root-MuiInput-root:before {
+  border-bottom: none;
+  display: none;
+}
+.right-date-picker .css-59p9m6-MuiInputBase-root-MuiInput-root:after {
+  display: none;
+}
+
+.timesheet-date-section-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #333;
+  border-top-right-radius: 10px;
+  border-top-left-radius: 10px;
+  padding-right: 10px;
+}
+
+.timesheet-date-section {
+  padding: 10px;
+  border-radius: 10px;
+  margin: 3px;
+  background-color: #000;
+}
+.timesheet-reports-date-picker .MuiInputBase-root {
+  border-radius: 12px;
+}
+.timesheet-reports-date-picker .MuiFormControl-root {
+  border-radius: 12px;
+}
+.timesheet-reports-date-picker .MuiInputBase-root input {
+  font-size: 14px;
+  padding: 12px 8px;
+  width: 80px;
+}
+.timesheet-reports-date-picker .MuiInputBase-root {
+  border: none;
+}
+
+/* Add more specific color styles for segments */
+.green {
+  background-color: #4caf50; /* Green */
+}
+
+.red {
+  background-color: #f44336; /* Red */
+}
+
+.grey {
+  background-color: #808080; /* Grey */
+}

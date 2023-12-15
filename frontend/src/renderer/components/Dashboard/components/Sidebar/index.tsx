@@ -14,13 +14,17 @@ import classes from './styles.module.css';
 import AccountingSvg from 'renderer/assets/svg/AccountingSvg';
 import Message from 'renderer/assets/svg/messageSvg';
 import ContentHubSvg from 'renderer/assets/svg/ContentHubSvg';
-import { Drawer, IconButton, useTheme } from '@mui/material';
+import { Box, Drawer, IconButton, useTheme } from '@mui/material';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import MenuIcon from '@mui/icons-material/Menu';
 import NewSideBar from './newSideBar';
 import ChatSvg from 'renderer/assets/svg/ChatSvg';
 import AntyBrowser from 'renderer/assets/svg/AnytBrowser';
+import brandLogoImg from 'renderer/assets/png/agency-go-logo.png'
+import { useNavigate } from 'react-router-dom';
+import SettingsIcon from '@mui/icons-material/Settings';
+
 
 const sideBarMenuConst = [
   {
@@ -222,6 +226,11 @@ const sideBarMenuConst = [
     icon: <EmployeSvg />,
     menu: [
       {
+        label: 'Timekeeping',
+        value: 'time-keeping',
+        link: '/timekeeping',
+      },
+      {
         label: 'Manage Employees',
         value: 'manageEmployees',
         link: '/employees-manage-employees',
@@ -233,13 +242,28 @@ const sideBarMenuConst = [
       },
     ],
   },
+  {
+    name: localisation.settings,
+    icon: <SettingsIcon />,
+    menu: [],
+    link: '/settings',
+  },
 ];
 
-function BrandLogo() {
+interface logoProp{
+  open:boolean
+}
+
+function BrandLogo({ open }: logoProp) {
+  const navigate=useNavigate()
   return (
-    <div className={classes.brandLogo}>
+    <div className={classes.brandLogo} onClick={()=>navigate('/home')}>
       <div className={classes.brandIcon}>
-        <BrandLogoSvg />
+      {open ? (
+          <img src={brandLogoImg} height="50px" width="auto" alt="AgencyLogo" />
+        ) : (
+          <BrandLogoSvg />
+        )}
       </div>
     </div>
   );
@@ -273,36 +297,37 @@ function SideBar() {
 
   return (
     <div className={`${classes.sidebar} ${mode}`}>
-      <BrandLogo />
-      <MenuIcon
-        onClick={open ? handleDrawerClose : handleDrawerOpen}
-        sx={{ marginLeft: '22px', marginTop: '10px' ,color:'#fff'}}
-      />
-      <Drawer
-        variant="permanent"
-        anchor="left"
-        open={open}
-        PaperProps={{
-          sx: {
-            width: open ? '240px' : '64px', // Adjust width for the mini variant
-            transition: 'width 225ms cubic-bezier(0.4, 0, 0.6, 1) 0ms',
-            overflowX: 'hidden',
-            backgroundColor: isDarkTheme ? '#0C0C0C' : '#04a1ff',
-          },
-        }}
-        sx={{
-          '& .MuiDrawer-paper': {
-            boxSizing: 'border-box',
-            width: open ? '240px' : '64px', // Adjust width for the mini variant
-            transition: 'width 225ms cubic-bezier(0.4, 0, 0.6, 1) 0ms',
-            overflowX: 'hidden',
-            border: 'none',
-            position: 'relative',
-          },
-        }}
-      >
-        <div className={classes.toolbar}>
-          {/* <IconButton onClick={open ? handleDrawerClose : handleDrawerOpen}>
+      <Box>
+       <BrandLogo open={open}/>
+        <MenuIcon
+          onClick={open ? handleDrawerClose : handleDrawerOpen}
+          sx={{ marginLeft: '20px', marginTop: '10px', color: '#fff' }}
+        />
+        <Drawer
+          variant="permanent"
+          anchor="left"
+          open={open}
+          PaperProps={{
+            sx: {
+              width: open ? '240px' : '64px', // Adjust width for the mini variant
+              transition: 'width 225ms cubic-bezier(0.4, 0, 0.6, 1) 0ms',
+              overflowX: 'hidden',
+              backgroundColor: isDarkTheme ? '#0C0C0C' : '#04a1ff',
+            },
+          }}
+          sx={{
+            '& .MuiDrawer-paper': {
+              boxSizing: 'border-box',
+              width: open ? '240px' : '64px', // Adjust width for the mini variant
+              transition: 'width 225ms cubic-bezier(0.4, 0, 0.6, 1) 0ms',
+              overflowX: 'hidden',
+              border: 'none',
+              position: 'relative',
+            },
+          }}
+        >
+          {/* <div className={classes.toolbar}> */}
+            {/* <IconButton onClick={open ? handleDrawerClose : handleDrawerOpen}>
             {theme.direction === 'rtl' ? (
               open ? (
                 <ChevronRightIcon />
@@ -315,26 +340,27 @@ function SideBar() {
               <ChevronRightIcon />
             )}
           </IconButton> */}
-        </div>
-        <div className={classes.sidebarNavWrapper}>
-          {sideBarMenuConst.map(({ name, icon, menu, link }, index) => {
-            return (
-              <NewSideBar
-                handlePopoverOpen={handlePopoverOpen}
-                handlePopoverClose={handlePopoverClose}
-                name={name}
-                icon={icon}
-                menu={menu}
-                currentNavItemHovered={currentNavItemHovered}
-                index={index}
-                link={link}
-                key={name}
-                open={open}
-              />
-            );
-          })}
-        </div>
-      </Drawer>
+          {/* </div> */}
+          <div className={classes.sidebarNavWrapper}>
+            {sideBarMenuConst.map(({ name, icon, menu, link }, index) => {
+              return (
+                <NewSideBar
+                  handlePopoverOpen={handlePopoverOpen}
+                  handlePopoverClose={handlePopoverClose}
+                  name={name}
+                  icon={icon}
+                  menu={menu}
+                  currentNavItemHovered={currentNavItemHovered}
+                  index={index}
+                  link={link}
+                  key={name}
+                  open={open}
+                />
+              );
+            })}
+          </div>
+        </Drawer>
+      </Box>
     </div>
   );
 }

@@ -85,8 +85,19 @@ export default function EditSubGroupModal({
           >
             <Typography>Group Name</Typography>
             <input
+              placeholder="Enter group name"
               value={newGroupName}
               onChange={(e) => setNewGroupName(e.target.value)}
+              style={{
+                borderRadius: '3px',
+                border: '1px solid #aaa',
+                padding: '12px',
+                width: '100%',
+                marginTop: '2px',
+                boxSizing: 'border-box',
+                backgroundColor: isDarkTheme ? '#000' : '#EAF1FF',
+                color: isDarkTheme ? '#fff' : '#000',
+              }}
             />
           </Stack>
         </form>

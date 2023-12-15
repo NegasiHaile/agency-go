@@ -125,7 +125,7 @@ export default function GroupTreeData({
   );
 
   return (
-    <Box sx={{ minHeight: 110, flexGrow: 1, width: 400 }}>
+    <Box sx={{ flexGrow: 1, width: 350 }}>
       <TreeView
         aria-label="rich object"
         defaultCollapseIcon={<ExpandMoreIcon />}

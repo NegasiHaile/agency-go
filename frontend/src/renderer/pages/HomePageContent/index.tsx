@@ -1,8 +1,7 @@
-import React from 'react';
 import Dashboard from 'renderer/components/Dashboard';
 import ShiftTable from './components/ShiftTable';
-import { ChartLine } from './components/Chart';
 import Earnings from './components/Earnings';
+import ChatterSales from './components/ChatterSales';
 import styles from './styles.modules.css';
 import { useTheme } from '@mui/material';
 
@@ -17,8 +16,8 @@ export default function HomePage() {
     <Dashboard>
       <section className={`${styles.wrapper} ${mode}`}>
         <Earnings />
+        <ChatterSales />
         <ShiftTable />
-        <ChartLine />
       </section>
     </Dashboard>
   );

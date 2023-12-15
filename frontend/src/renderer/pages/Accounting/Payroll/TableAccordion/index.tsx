@@ -1,4 +1,4 @@
-import * as React from 'react';
+import {  useState } from 'react';
 import { styled } from '@mui/material/styles';
 import MuiAccordion, { AccordionProps } from '@mui/material/Accordion';
 import MuiAccordionSummary, {
@@ -6,7 +6,10 @@ import MuiAccordionSummary, {
 } from '@mui/material/AccordionSummary';
 import MuiAccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
+import FolderOffIcon from '@mui/icons-material/FolderOff';
+
 import {
+  Box,
   Table,
   TableCell,
   TableContainer,
@@ -14,6 +17,7 @@ import {
   TableRow,
   useTheme,
 } from '@mui/material';
+import PayrollTable from '../PayrollTable';
 
 const Accordion = styled((props: AccordionProps) => (
   <MuiAccordion disableGutters elevation={0} square {...props} />
@@ -50,8 +54,9 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
   borderTop: '1px solid rgba(0, 0, 0, .125)',
 }));
 
-export default function TableAccordion({ children }: any) {
-  const [expanded, setExpanded] = React.useState<string | false>('1');
+export default function TableAccordion({allUsers, allPayrolls, setAllPayrolls, groupedPayrolls, payrollGroupTitle }: any) {
+
+  const [expanded, setExpanded] = useState<string | false>('1');
 
   const handleChange =
     (panel: string) => (event: React.SyntheticEvent, newExpanded: boolean) => {
@@ -62,11 +67,11 @@ export default function TableAccordion({ children }: any) {
   const isDarkTheme = theme.palette.mode === 'dark';
 
   return (
-    <div>
-      {['1', '2', '3', '4', '5'].map((d) => (
-        <Accordion
-          expanded={expanded === d}
-          onChange={handleChange(d)}
+    <Box sx={{borderRadius: '3px', overflow: 'auto',}}>
+      {!!groupedPayrolls.length ? groupedPayrolls.map((payrollGroup:any, index:number) => {
+        return <Accordion key={index+1}
+          expanded={expanded === `${index+1}`}
+          onChange={handleChange(`${index+1}`)}
           sx={{ borderColor: isDarkTheme ? '#292929' : '#fff' }}
         >
           <AccordionSummary
@@ -76,27 +81,37 @@ export default function TableAccordion({ children }: any) {
               background: isDarkTheme ? '#131213' : '#EAF1FF',
             }}
           >
-            <AccordionHeaderData d={d} />
+            <AccordionHeaderData
+            payrollGroup={payrollGroup}
+            payrollGroupTitle={payrollGroupTitle}
+            index={`${index+1}`} />
           </AccordionSummary>
           <AccordionDetails
             sx={{ background: isDarkTheme ? '#0C0C0C' : '#fff' }}
           >
-            {children}
+             <PayrollTable
+             key={`${index+1}`}
+             allUsers={allUsers}
+             payrollGroup={payrollGroup?.data??[]}
+             allPayrolls={allPayrolls}
+             setAllPayrolls={setAllPayrolls} />
           </AccordionDetails>
         </Accordion>
-      ))}
-    </div>
+      }) : 
+      <Box width={'100%'} display={'flex'} gap={'5px'} justifyContent={'center'} alignItems={'center'} height={'150px'}>
+        <FolderOffIcon sx={{fontSize: '36px'}} />
+      <Typography fontSize={'20px'}>No matching data!</Typography>  
+      </Box>}
+    </Box>
   );
 }
 
-const AccordionHeaderData = ({ d }: any) => {
+const AccordionHeaderData = ({ payrollGroup, payrollGroupTitle, index }: any) => {
+  const {startDate, endDate, totalCommissionEarned, totalHours, totalSalary, totalPayment} = payrollGroup;
    const theme = useTheme();
    const isDarkTheme = theme.palette.mode === 'dark';
 
-
-
-
-  return (
+   return (
     <>
       <TableContainer>
         <Table aria-label="simple table">
@@ -122,7 +137,7 @@ const AccordionHeaderData = ({ d }: any) => {
                   padding: 0,
                 }}
               >
-                Payroll {d}
+                {payrollGroupTitle} {index}
               </TableCell>
               <TableCell
                 sx={{
@@ -132,10 +147,10 @@ const AccordionHeaderData = ({ d }: any) => {
                   padding: 0,
                 }}
               >
-                <Typography sx={{ fontSize: '12px' }}>
+                <Typography sx={{ fontSize: '10px' }}>
                   Start Date
                 </Typography>
-                <Typography>5/10/23</Typography>
+                <Typography>{startDate}</Typography>
               </TableCell>
               <TableCell
                 sx={{
@@ -145,10 +160,10 @@ const AccordionHeaderData = ({ d }: any) => {
                   padding: 0,
                 }}
               >
-                <Typography sx={{ fontSize: '12px' }}>
+                <Typography sx={{ fontSize: '10px' }}>
                   End Date
                 </Typography>
-                <Typography>5/12/23</Typography>
+                <Typography>{endDate}</Typography>
               </TableCell>
               <TableCell
                 sx={{
@@ -158,10 +173,10 @@ const AccordionHeaderData = ({ d }: any) => {
                   padding: 0,
                 }}
               >
-                <Typography sx={{ fontSize: '12px', }}>
+                <Typography sx={{ fontSize: '10px', }}>
                   Total Hours
                 </Typography>
-                <Typography>700 hrs</Typography>
+                <Typography>{parseFloat(totalHours).toFixed(2)} hrs</Typography>
               </TableCell>
               <TableCell
                 sx={{
@@ -171,10 +186,10 @@ const AccordionHeaderData = ({ d }: any) => {
                   padding: 0,
                 }}
               >
-                <Typography sx={{ fontSize: '12px'}}>
+                <Typography sx={{ fontSize: '10px'}}>
                   Total Salary
                 </Typography>
-                <Typography>$34,042.42</Typography>
+                <Typography>${parseFloat(totalSalary).toFixed(2)}</Typography>
               </TableCell>
               <TableCell
                 sx={{
@@ -184,10 +199,10 @@ const AccordionHeaderData = ({ d }: any) => {
                   padding: 0,
                 }}
               >
-                <Typography sx={{ fontSize: '12px'}}>
-                  Total Salary
+                <Typography sx={{ fontSize: '10px'}}>
+                  Total Commission
                 </Typography>
-                <Typography>$3,042.42</Typography>
+                <Typography>${parseFloat(totalCommissionEarned).toFixed(2)}</Typography>
               </TableCell>
               <TableCell
                 sx={{
@@ -213,7 +228,7 @@ const AccordionHeaderData = ({ d }: any) => {
                   padding: 0,
                 }}
               >
-                $11,934
+                ${parseFloat(totalPayment).toFixed(2)}
               </TableCell>
             </TableRow>
           </TableHead>

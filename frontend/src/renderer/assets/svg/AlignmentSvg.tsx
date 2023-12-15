@@ -10,7 +10,7 @@ function AlignmentSvg() {
       <path
         d="M16.5 10.5H3.5M20.5 6.5H3.5M20.5 14.5H3.5M16.5 18.5H3.5"
         stroke="#AAAAAA"
-        stroke-width="2"
+        strokeWidth="2"
         stroke-linecap="round"
         stroke-linejoin="round"
       />

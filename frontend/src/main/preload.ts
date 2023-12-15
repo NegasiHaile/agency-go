@@ -27,6 +27,7 @@ const electronHandler = {
       return ipcRenderer.removeListener(channel, listener)
     }
   },
+  copyToClipboard: (text) => ipcRenderer.invoke("copy-to-clipboard", text),
 };
 
 contextBridge.exposeInMainWorld('electron', electronHandler);

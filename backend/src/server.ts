@@ -11,12 +11,19 @@ import { RoleRoute } from './routes/roles.route';
 import { ShiftRoute } from './routes/shift.route';
 import { InvoicingRoute } from './routes/invoicing.route';
 import { PayrollRoute } from './routes/payroll.routes';
-import { smartTagsRoute } from './routes/smarttags.route';
+import { SmartTagRoute } from './routes/smartTagRoute.route';
+import { PromotionCampaignRoute } from './routes/promotionCampaign.route';
+import { TierRoute } from './routes/tier.route';
 // import { PayrollRoute } from './routes/payroll.routes';
 import { ChatRoute } from './routes/chat.route';
+import { AttendanceRoute } from './routes/attendence.route';
+import { ContentRoute } from './routes/content.route';
+import { TimelineRoute } from './routes/timeline.route';
+import { EarningsRoute } from './routes/earnings.route';
 ValidateEnv();
-
 const app = new App([
+  new TierRoute(),
+  new PromotionCampaignRoute(),
   new UserRoute(),
   new AuthRoute(),
   new AgencyRoute(),
@@ -26,11 +33,15 @@ const app = new App([
   new EmployeeRoute(),
   new CreatorRoute(),
   new SessionsRoute(),
-  new smartTagsRoute(),
+  new SmartTagRoute(),
   new EmailRoute(),
   new RoleRoute(),
   new ShiftRoute(),
   new ChatRoute(),
+  new AttendanceRoute(),
+  new ContentRoute(),
+  new TimelineRoute(),
+  new EarningsRoute(),
 ]);
 
 try {
@@ -39,7 +50,6 @@ try {
   console.log(err);
 }
 
-
-process.on("uncaughtException",(err)=>{
-  console.log(err)
-})
+process.on('uncaughtException', err => {
+  console.log(err);
+});

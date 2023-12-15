@@ -5,9 +5,9 @@ import PageTopbar from 'renderer/components/PageTopbar';
 import AccountSvg from 'renderer/assets/svg/AccountSvg';
 import PreferencesSvg from 'renderer/assets/svg/PreferencesSvg';
 import BillingSvg from 'renderer/assets/svg/BillingSvg';
-import WalletSvg from 'renderer/assets/svg/WalletSvg';
+// import WalletSvg from 'renderer/assets/svg/WalletSvg';
 import RoleSvg from 'renderer/assets/svg/RoleSvg';
-import SalesSvg from 'renderer/assets/svg/SalesSvg';
+// import SalesSvg from 'renderer/assets/svg/SalesSvg';
 import AboutSvg from 'renderer/assets/svg/AboutSvg';
 import PartnersSvg from 'renderer/assets/svg/PartnersSvg';
 import { useState } from 'react';
@@ -23,6 +23,7 @@ import styles from './styles.module.css';
 import localisation from '../../components/localisation.json';
 import WhiteLabelSvg from 'renderer/assets/svg/WhiteLabelSvg';
 import WhiteLabel from 'renderer/components/Settings/WhiteLabel';
+import { useTranslation } from 'react-i18next';
 
 const navList = [
   {
@@ -40,21 +41,21 @@ const navList = [
     icon: <BillingSvg />,
     value: 'billing',
   },
-  {
-    label: 'Wallet',
-    icon: <WalletSvg />,
-    value: 'wallet',
-  },
+  // {
+  //   label: 'Wallet',
+  //   icon: <WalletSvg />,
+  //   value: 'wallet',
+  // },
   {
     label: 'Role Settings',
     icon: <RoleSvg />,
     value: 'roleSetting',
   },
-  {
-    label: 'Sales Settings',
-    icon: <SalesSvg />,
-    value: 'salesSettings',
-  },
+  // {
+  //   label: 'Sales Settings',
+  //   icon: <SalesSvg />,
+  //   value: 'salesSettings',
+  // },
   {
     label: 'White Label',
     icon: <WhiteLabelSvg />,
@@ -72,6 +73,7 @@ const navList = [
   },
 ];
 export default function Settings() {
+  const { t } = useTranslation();
   const [selectedNav, setSelectedNav] = useState('yourAccount');
   const handleOnChange = (value: string) => {
     setSelectedNav(value);
@@ -85,8 +87,8 @@ export default function Settings() {
         return <Preferences />;
       case 'billing':
         return <Billing />;
-      case 'wallet':
-        return <Wallet />;
+      // case 'wallet':
+      //   return <Wallet />;
       case 'about':
         return <AboutGO />;
       case 'partners':
@@ -99,11 +101,14 @@ export default function Settings() {
         return <h1>Not found</h1>;
     }
   };
+
   return (
     <Dashboard>
       <section className={styles.wrapper}>
         <PageTopbar>
-          <PageTopbar.HeaderText>{localisation.settings}</PageTopbar.HeaderText>
+          <PageTopbar.HeaderText>
+            {t(`${localisation.settings}`)}
+          </PageTopbar.HeaderText>
         </PageTopbar>
         <div className={styles.innerWrapper}>
           <aside className={styles.aside}>

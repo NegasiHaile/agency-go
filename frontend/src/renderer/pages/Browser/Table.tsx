@@ -38,40 +38,6 @@ interface Data {
   protein: number;
 }
 
-function createData(
-  id: number,
-  name: string,
-  calories: number,
-  fat: number,
-  carbs: number,
-  protein: number
-): Data {
-  return {
-    id,
-    name,
-    calories,
-    fat,
-    carbs,
-    protein,
-  };
-}
-
-const rows = [
-  createData(1, 'Cupcake', 305, 3.7, 67, 4.3),
-  createData(2, 'Donut', 452, 25.0, 51, 4.9),
-  createData(3, 'Eclair', 262, 16.0, 24, 6.0),
-  createData(4, 'Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData(5, 'Gingerbread', 356, 16.0, 49, 3.9),
-  createData(6, 'Honeycomb', 408, 3.2, 87, 6.5),
-  createData(7, 'Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData(8, 'Jelly Bean', 375, 0.0, 94, 0.0),
-  createData(9, 'KitKat', 518, 26.0, 65, 7.0),
-  createData(10, 'Lollipop', 392, 0.2, 98, 0.0),
-  createData(11, 'Marshmallow', 318, 0, 81, 2.0),
-  createData(12, 'Nougat', 360, 19.0, 9, 37.0),
-  createData(13, 'Oreo', 437, 18.0, 63, 4.0),
-];
-
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
@@ -122,48 +88,36 @@ interface HeadCell {
   numeric: boolean;
 }
 
-const headCells: readonly HeadCell[] = [
+const headCells = [
   {
     id: 'name',
-    numeric: false,
     disablePadding: true,
     label: 'Name',
   },
   {
-    id: 'calories',
-    numeric: true,
+    id: 'a',
+    disablePadding: false,
+    label: 'OS',
+  },
+  {
+    id: 'status',
     disablePadding: false,
     label: 'Status',
   },
   {
-    id: 'fat',
-    numeric: true,
-    disablePadding: false,
-    label: 'Notes',
-  },
-  {
     id: 'carbs',
-    numeric: true,
     disablePadding: false,
     label: 'Tags',
   },
   {
-    id: 'protein',
-    numeric: true,
+    id: 'ml',
     disablePadding: false,
-    label: 'Proxy',
+    label: 'Location Mocked',
   },
   {
     id: 'protein',
-    numeric: true,
     disablePadding: false,
-    label: '',
-  },
-  {
-    id: 'protein',
-    numeric: true,
-    disablePadding: false,
-    label: '',
+    label: 'Action',
   },
 ];
 
@@ -196,17 +150,6 @@ function EnhancedTableHead(props: EnhancedTableProps) {
   return (
     <TableHead>
       <TableRow>
-        <TableCell padding="checkbox">
-          <Checkbox
-            color="primary"
-            indeterminate={numSelected > 0 && numSelected < rowCount}
-            checked={rowCount > 0 && numSelected === rowCount}
-            onChange={onSelectAllClick}
-            inputProps={{
-              'aria-label': 'select all desserts',
-            }}
-          />
-        </TableCell>
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
@@ -214,18 +157,8 @@ function EnhancedTableHead(props: EnhancedTableProps) {
             padding={headCell.disablePadding ? 'none' : 'normal'}
             sortDirection={orderBy === headCell.id ? order : false}
           >
-            <TableSortLabel
-              active={orderBy === headCell.id}
-              direction={orderBy === headCell.id ? order : 'asc'}
-              onClick={createSortHandler(headCell.id)}
-            >
-              {headCell.label}
-              {orderBy === headCell.id ? (
-                <Box component="span" sx={visuallyHidden}>
-                  {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                </Box>
-              ) : null}
-            </TableSortLabel>
+            {headCell.id === 'name' && <>&nbsp; &nbsp;</>}
+            {headCell.label}
           </TableCell>
         ))}
       </TableRow>
@@ -235,6 +168,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
 
 interface EnhancedTableToolbarProps {
   numSelected: number;
+  increaseFetchIndex: () => any;
 }
 
 function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
@@ -302,6 +236,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
         name="Example Name"
         id="exampleId"
         onClose={handleCloseModal}
+        increaseFetchIndex={props.increaseFetchIndex}
       />
     </Toolbar>
   );
@@ -312,7 +247,26 @@ export default function EnhancedTable() {
   const [selected, setSelected] = React.useState<readonly number[]>([]);
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
+  const [rows, setRows] = React.useState([]);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [fetchIndex, setFetchIndex] = React.useState(0);
+
+  React.useEffect(() => {
+    window.electron.ipcRenderer
+      .invoke('anty-browser:get-profiles')
+      .then((res) => {
+        setRows(res);
+      });
+  }, [fetchIndex]);
+
+  const launchBrowser = (args) => {
+    window.electron.ipcRenderer.sendMessage('anty-browser:launch', args);
+  };
+
+  const deleteProfile = async (id) => {
+    await window.electron.ipcRenderer.invoke('anty-browser:delete-profile', id);
+    setFetchIndex(fetchIndex + 1);
+  };
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
@@ -321,34 +275,6 @@ export default function EnhancedTable() {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
-  };
-
-  const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.checked) {
-      const newSelected = rows.map((n) => n.id);
-      setSelected(newSelected);
-      return;
-    }
-    setSelected([]);
-  };
-
-  const handleClick = (event: React.MouseEvent<unknown>, id: number) => {
-    const selectedIndex = selected.indexOf(id);
-    let newSelected: readonly number[] = [];
-
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, id);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1)
-      );
-    }
-    setSelected(newSelected);
   };
 
   const handleChangePage = (event: unknown, newPage: number) => {
@@ -362,29 +288,17 @@ export default function EnhancedTable() {
     setPage(0);
   };
 
-  const handleChangeDense = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setDense(event.target.checked);
-  };
-
-  const isSelected = (id: number) => selected.indexOf(id) !== -1;
-
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
-  const visibleRows = React.useMemo(
-    () =>
-      stableSort(rows, getComparator(order, orderBy)).slice(
-        page * rowsPerPage,
-        page * rowsPerPage + rowsPerPage
-      ),
-    [order, orderBy, page, rowsPerPage]
-  );
-
   return (
     <Box sx={{ width: '100%' }}>
       <Paper sx={{ width: '100%', mb: 2 }}>
-        <EnhancedTableToolbar numSelected={selected.length} />
+        <EnhancedTableToolbar
+          numSelected={selected.length}
+          increaseFetchIndex={() => setFetchIndex(fetchIndex + 1)}
+        />
         <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
@@ -395,59 +309,41 @@ export default function EnhancedTable() {
               numSelected={selected.length}
               order={order}
               orderBy={orderBy}
-              onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
               rowCount={rows.length}
             />
             <TableBody>
-              {visibleRows.map((row, index) => {
-                const isItemSelected = isSelected(row.id);
+              {rows.map((row, index) => {
                 const labelId = `enhanced-table-checkbox-${index}`;
+                const mockLocation =
+                  row?.geolocation && 'lat' in row.geolocation ? true : false;
 
                 return (
                   <TableRow
                     hover
-                    onClick={(event) => handleClick(event, row.id)}
                     role="checkbox"
-                    aria-checked={isItemSelected}
                     tabIndex={-1}
                     key={row.id}
-                    selected={isItemSelected}
                     sx={{ cursor: 'pointer' }}
                   >
-                    <TableCell padding="checkbox">
-                      <Checkbox
-                        color="primary"
-                        checked={isItemSelected}
-                        inputProps={{
-                          'aria-labelledby': labelId,
-                        }}
-                      />
-                    </TableCell>
-                    <TableCell
-                      component="th"
-                      id={labelId}
-                      scope="row"
-                      padding="none"
-                    >
+                    <TableCell component="th" id={labelId} scope="row">
                       <Box
                         display={'flex'}
                         justifyContent={'start'}
                         alignItems={'center'}
                         gap="10px"
                       >
-                        <GoogleIcon />
-                        <AppleIcon />
-                        <MoreVertIcon />
+                        {' '}
                         {row.name}
-                        <Button variant="outlined">Start</Button>
                       </Box>
                     </TableCell>
+                    <TableCell>{row.platform}</TableCell>
                     <TableCell align="left">
-                      <Button variant="contained">Ready</Button>
-                    </TableCell>
-                    <TableCell align="left">
-                      This is a sample of an added note...
+                      <Chip
+                        sx={{ color: 'white' }}
+                        label={row.status}
+                        color="primary"
+                      />
                     </TableCell>
                     <TableCell align="left">
                       <Box
@@ -459,20 +355,34 @@ export default function EnhancedTable() {
                           gap: '10px',
                         }}
                       >
-                        <Chip label="OFLinks" /> <Chip label="OFUsers" />{' '}
-                        <Chip label="OFUsers" />{' '}
+                        {row.tags.map((c) => (
+                          <Chip
+                            key={c}
+                            sx={{ color: 'white' }}
+                            label={c}
+                            color="primary"
+                          />
+                        ))}
                       </Box>
                     </TableCell>
-                    <TableCell align="left">
-                      sockt4://95.216.63.149.1222
-                    </TableCell>
+                    <TableCell>{mockLocation.toString()}</TableCell>
                     <TableCell align="left">
                       <Box display={'flex'} gap="20px">
-                        <DeleteForeverOutlinedIcon />
-                        <EditOutlinedIcon />
+                        <Button
+                          onClick={() => launchBrowser(row)}
+                          variant="outlined"
+                        >
+                          Launch Browser
+                        </Button>
+                        <Button
+                          variant="contained"
+                          color="error"
+                          onClick={() => deleteProfile(row.id)}
+                        >
+                          Delete
+                        </Button>
                       </Box>
                     </TableCell>
-                    <TableCell align="left" width={'200px'}></TableCell>
                   </TableRow>
                 );
               })}
@@ -498,10 +408,6 @@ export default function EnhancedTable() {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Paper>
-      <FormControlLabel
-        control={<Switch checked={dense} onChange={handleChangeDense} />}
-        label="Dense padding"
-      />
     </Box>
   );
 }

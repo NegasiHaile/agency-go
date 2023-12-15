@@ -24,7 +24,7 @@ import CandleSvg from 'renderer/assets/svg/CandleSvg';
 import PageAside from 'renderer/components/PageAside';
 import theme from 'renderer/styles/muiTheme';
 // import CloseCircleSvg from 'renderer/assets/svg/CloseCircleSvg';
-import React, { ChangeEvent, useState } from 'react';
+import React, { ChangeEvent, useContext, useState } from 'react';
 import SearchInput from 'renderer/components/SearchInput';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
@@ -34,23 +34,23 @@ import styles from './styles.module.css';
 import { useLocation } from 'react-router-dom';
 import MultiSelect from '../Dropdown';
 import useQuery from 'renderer/hooks/useQuery';
+import { AuthContext } from 'renderer/contexts/AuthContext';
 
 interface $ByManageEmployeeCreatorProps {
   label?: string;
-  
+  setSelectedValues?: (e: any) => void;
+  selectedValues?: string;
 }
 
 function FilterByManageEmployeeCreator({
   label = 'By Creator',
-
+  setSelectedValues,
+  selectedValues,
 }: $ByManageEmployeeCreatorProps) {
   const [collapse, setCollapse] = useState(false);
-  const [selectedValues, setSelectedValues] = useState([]);
   const { isLoading, data } = useQuery({ key: 'get-creator' });
-const theme = useTheme();
-const isDarkTheme = theme.palette.mode === 'dark';
-
-
+  const theme = useTheme();
+  const isDarkTheme = theme.palette.mode === 'dark';
 
   return (
     <div>
@@ -61,7 +61,6 @@ const isDarkTheme = theme.palette.mode === 'dark';
           justifyContent: 'space-between',
           cursor: 'pointer',
           marginBottom: '12px',
-         
         }}
         onClick={() => setCollapse(!collapse)}
       >
@@ -80,7 +79,7 @@ const isDarkTheme = theme.palette.mode === 'dark';
         /> */}
         <MultiSelect
           multiple={false}
-          creatorNames={data?.data}
+          creatorNames={data?.data?.creators}
           selectedValues={selectedValues}
           setSelectedValues={setSelectedValues}
         />
@@ -201,7 +200,7 @@ function FilterByStatus({ status, setStatus, title, options }: $ByStatusProps) {
           alignItems: 'center',
           justifyContent: 'space-between',
           cursor: 'pointer',
-          marginBottom: '12px',
+          marginBottom: '5px',
         }}
         onClick={() => setCollapse(!collapse)}
       >
@@ -254,7 +253,7 @@ function FilterByEmployeeInCreator({
     },
   };
   const [collapse, setCollapse] = useState(false);
-  const [agencyId] = useState(localStorage.getItem('AgencyId') || '')
+  const [agencyId] = useState(localStorage.getItem('agencyID') || '');
   const { isLoading, data } = useQuery({
     key: 'get-employee',
     params: { id: agencyId },
@@ -272,7 +271,6 @@ function FilterByEmployeeInCreator({
           alignItems: 'center',
           justifyContent: 'space-between',
           cursor: 'pointer',
-          marginBottom: '12px',
         }}
         onClick={() => setCollapse(!collapse)}
       >
@@ -281,16 +279,16 @@ function FilterByEmployeeInCreator({
         </Typography>
         {!collapse ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
       </Box>
-      <Collapse in={!collapse} sx={{ marginBottom: '12px' }}>
-        <FormControl sx={{ width: 230, marginBottom: '30px' }}>
-          
+      <Collapse in={!collapse}>
+        <FormControl sx={{ width: 250 }}>
           <Select
             sx={{
-              color: '#fff',
+              color: '#fff !important',
               '& .css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.MuiSelect-select':
                 {
                   border: ' 1px solid #ddd',
                   height: ' 20px',
+                  color: '#fff !important',
                 },
               '&:hover': {
                 border: ' 1px solid #4a4a4a',
@@ -300,13 +298,12 @@ function FilterByEmployeeInCreator({
             id="demo-multiple-checkbox"
             value={employeeId.name}
             onChange={(e) => handleChange(e)}
-            // renderValue={(selected) => (selected.name ? selected.name : 'reeeteter')}
             renderValue={(selected: any) =>
-              selected.name !== '' ? undefined : 'placeholder text'
+              selected.name !== '' ? selected.name : 'Select employee'
             }
             MenuProps={MenuProps}
           >
-            {data?.data.map((name: any) => (
+            {data?.data?.employees?.map((name: any) => (
               <MenuItem key={name} value={name} sx={{ display: 'flex' }}>
                 <Checkbox checked={employeeId._id === name._id} />
                 <ListItemText primary={name.name} />
@@ -334,19 +331,26 @@ const initFiltersState = [
 interface $FilterProps {
   handleSearch?: any;
   refetch?: any;
+  setCurrnetPage?: any;
 }
-function Filter({ handleSearch, refetch }: $FilterProps) {
+function Filter({ handleSearch, refetch, setCurrnetPage }: $FilterProps) {
+  const { userData } = useContext(AuthContext);
   const [filters, setFilters] = useState(initFiltersState);
   const [creatorSearch, setCreatorSearch] = useState('');
   const [employeeSearch, setEmployeeSearch] = useState('');
 
   const [status, setStatus] = useState('');
   const [linkStatus, setLinkStatus] = useState('');
-  const [selectedValues, setSelectedValues] = useState([]);
+  const [selectedValues, setSelectedValues] = useState('');
 
   const { isLoading, data } = useQuery({ key: 'get-creator' });
   const [employeeId, setEmployeeId] = React.useState<any>({});
-  
+  const [chipData, setChipData] = React.useState<readonly ChipData[]>([
+    // { key: 0, label: 'Status' },
+    // { key: 1, label: 'Employee' },
+    // { key: 2, label: 'Creator' },
+  ]);
+
   const location = useLocation();
   const onRemoveFilter = () => {
     setCreatorSearch('');
@@ -356,40 +360,64 @@ function Filter({ handleSearch, refetch }: $FilterProps) {
     setSelectedValues([]);
     setEmployeeSearch('');
     refetch('');
+    setChipData([]);
+    setCurrnetPage(1);
 
     // setFilters(filters.filter((filter) => filter.label !== id));
   };
 
   const handleFilterData = () => {
+    setCurrnetPage(1);
     const data = {};
     if (location.pathname === '/creators') {
       if (creatorSearch != '') {
-        Object.assign(data, { creator: creatorSearch });
+        Object.assign(data, {
+          agencyID: userData?.agency?._id,
+          creator: creatorSearch,
+        });
       }
       if (status != '') {
-        Object.assign(data, { status: status == 'Activated' ? true : false });
+        Object.assign(data, {
+          agencyID: userData?.agency?._id,
+          status: status == 'Activated' ? true : false,
+        });
       }
       if (linkStatus != '') {
         Object.assign(data, {
-          plateformlink: linkStatus == 'Linked' ? true : false,
+          agencyID: userData?.agency?._id,
+          isLinkOnlyFans: linkStatus == 'Linked' ? true : false,
         });
       }
       if (employeeId && Object.values(employeeId).length) {
         Object.assign(data, {
+          agencyID: userData?.agency?._id,
           employeeId: employeeId._id,
+        });
+      } else {
+        Object.assign(data, {
+          agencyID: userData?.agency?._id,
         });
       }
     } else {
       if (selectedValues.length) {
-        Object.assign(data, { creator: selectedValues.toString() });
+        Object.assign(data, {
+          creator: selectedValues.toString(),
+        });
       }
       if (status != '') {
         Object.assign(data, {
-          status: status == 'inactive' ? 'inactive' : 'active',
+          status:
+            status == 'Inactive'
+              ? 'inactive'
+              : status == 'Deactivated'
+              ? 'deactivate'
+              : 'active',
         });
       }
       if (employeeSearch != '') {
-        Object.assign(data, { name: employeeSearch });
+        Object.assign(data, {
+          name: employeeSearch,
+        });
       }
     }
     handleSearch(data);
@@ -400,19 +428,14 @@ function Filter({ handleSearch, refetch }: $FilterProps) {
       chips.filter((chip) => chip.key !== chipToDelete.key)
     );
   };
-    const [chipData, setChipData] = React.useState<readonly ChipData[]>([
-      { key: 0, label: 'Status' },
-      { key: 1, label: 'Employee' },
-      { key: 2, label: 'Creator' },
-    ]);
+
   return (
     <PageAside>
       <Box
         sx={{
-          padding: '20px',
+          padding: '10px',
           display: 'flex',
           alignItems: 'center',
-        
         }}
       >
         <CandleSvg />
@@ -420,30 +443,45 @@ function Filter({ handleSearch, refetch }: $FilterProps) {
       </Box>
 
       <Box>
-        <Typography marginLeft={'20px'}> Applied Filters</Typography>
+        {chipData.length > 0 && (
+          <>
+            <Typography marginLeft={'20px'}> Applied Filters</Typography>
+            <Box
+              sx={{
+                borderBottom: `1px solid ${theme.palette.primary.contrastText}`,
+                gap: '10px',
+                display: 'flex',
+                flexWrap: 'wrap',
+                padding: '10px 10px 10px 10px ',
+                marginBottom: '10px',
+              }}
+            >
+              {chipData?.map((data) => {
+                return (
+                  <Chip label={data.label} onDelete={handleDelete(data)} />
+                );
+              })}
+            </Box>
+          </>
+        )}
         <Box
           sx={{
-            borderBottom: `1px solid ${theme.palette.primary.contrastText}`,
-
-            gap: '10px',
             display: 'flex',
-            padding: '20px 0px 20px 20px ',
+            justifyContent: 'center',
+            gap: '20px',
           }}
         >
-          {chipData.map((data) => {
-            return <Chip label={data.label} onDelete={handleDelete(data)} />;
-          })}
+          <Button variant="outlined" onClick={onRemoveFilter}>
+            Reset
+          </Button>
+          <Button
+            variant="contained"
+            sx={{ color: 'white' }}
+            onClick={handleFilterData}
+          >
+            Search
+          </Button>
         </Box>
-        {/* <Button variant="outlined" onClick={onRemoveFilter}>
-          Reset
-        </Button>
-        <Button
-          variant="contained"
-          sx={{ color: 'white' }}
-          onClick={handleFilterData}
-        >
-          Search
-        </Button> */}
         {/* <Stack
           justifyContent="space-between"
           flexDirection="row"
@@ -476,8 +514,8 @@ function Filter({ handleSearch, refetch }: $FilterProps) {
           ))}
         </Stack> */}
       </Box>
-      <Box padding="12px 16px 12px 16px">
-        {location.pathname != '/creators' && (
+      {location.pathname != '/creators' && (
+        <Box padding="12px 16px 12px 16px">
           <>
             <FilterByEmployee
               employeeSearch={employeeSearch}
@@ -490,10 +528,10 @@ function Filter({ handleSearch, refetch }: $FilterProps) {
               }}
             />
           </>
-        )}
-      </Box>
+        </Box>
+      )}
 
-      <Box padding="0px 16px 0px 16px">
+      <Box padding="0px 12px 0px 12px">
         {location.pathname === '/creators' ? (
           <FilterByCreator
             creatorSearch={creatorSearch}
@@ -510,17 +548,20 @@ function Filter({ handleSearch, refetch }: $FilterProps) {
               selectedValues={selectedValues}
               setSelectedValues={setSelectedValues}
             /> */}
-            <FilterByManageEmployeeCreator />
+            <FilterByManageEmployeeCreator
+              selectedValues={selectedValues}
+              setSelectedValues={setSelectedValues}
+            />
           </>
         )}
         <Divider
           sx={{
             background: theme.palette.primary.contrastText,
-            marginTop: '11px',
+            marginTop: '10px',
           }}
         />
       </Box>
-      <Box padding="12px 16px 12px 16px">
+      <Box padding="5px 16px 2px 16px">
         <FilterByStatus
           title="By Status"
           status={status}
@@ -528,18 +569,18 @@ function Filter({ handleSearch, refetch }: $FilterProps) {
           options={
             location.pathname === '/creators'
               ? ['Activated', 'Deactivated']
-              : ['active', 'inactive']
+              : ['Activated', 'Inactive', 'Deactivated']
           }
         />
         <Divider
           sx={{
             background: theme.palette.primary.contrastText,
-            marginTop: '11px',
+            marginTop: '5px',
           }}
         />
       </Box>
       {location.pathname === '/creators' && (
-        <Box padding="12px 16px 12px 16px">
+        <Box padding="5px 16px 0px 16px">
           <FilterByStatus
             title="By Link Status"
             status={linkStatus}
@@ -549,12 +590,12 @@ function Filter({ handleSearch, refetch }: $FilterProps) {
           <Divider
             sx={{
               background: theme.palette.primary.contrastText,
-              marginTop: '11px',
+              marginTop: '5px',
             }}
           />
         </Box>
       )}
-      {location.pathname === '/creators' && (
+      {/* {location.pathname === '/creators' && (
         <Box padding="12px 16px 12px 16px">
           <FilterByStatus
             title="By Employee"
@@ -569,23 +610,17 @@ function Filter({ handleSearch, refetch }: $FilterProps) {
             }}
           />
         </Box>
-      )}
+      )} */}
 
-      {/* {location.pathname == '/creators' && (
+      {location.pathname == '/creators' && (
         <Box padding="12px 16px 12px 16px">
           <FilterByEmployeeInCreator
             title="By Employee name"
             setEmployeeId={setEmployeeId}
             employeeId={employeeId}
           />
-          <Divider
-            sx={{
-              background: theme.palette.primary.contrastText,
-              marginTop: '11px',
-            }}
-          />
         </Box>
-      )} */}
+      )}
     </PageAside>
   );
 }

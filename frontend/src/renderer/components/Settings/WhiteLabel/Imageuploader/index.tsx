@@ -2,6 +2,7 @@ import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import { Box, Typography } from '@mui/material';
 import UploadHeadShot from '../../../../assets/svg/UploadSvg';
+import { useTranslation } from 'react-i18next';
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -24,6 +25,7 @@ export default function ImageUpload({
   setAgencyLogo,
   handleImageChange,
 }: ImageUploadProps) {
+  const { t } = useTranslation()
   return (
     <Button
       component="label"
@@ -54,14 +56,14 @@ export default function ImageUpload({
           gap={1}
         >
           <Typography color={'#04A1FF'} fontWeight={600} fontSize={'16px'}>
-            Click to upload{' '}
+            {t("Click to upload")}
           </Typography>
           <Typography color={'#fff'} fontSize={'15px'}>
-            or drag and drop
+            {t("or drag and drop")}
           </Typography>
         </Box>
         <Typography fontSize={'12px'} color={'#fff'}>
-          SVG, PNG, JPG or GIF (max. 800x400px)
+          {t("SVG, PNG, JPG or GIF (max. 800x400px)")}
         </Typography>
       </Box>
       <VisuallyHiddenInput

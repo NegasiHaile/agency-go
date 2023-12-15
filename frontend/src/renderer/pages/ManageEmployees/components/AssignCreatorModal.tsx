@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import PageTopbar from 'renderer/components/PageTopbar';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import useQuery from 'renderer/hooks/useQuery';
 import MultiSelect from 'renderer/components/Dropdown';
 import fetchReq from 'utils/fetch';
@@ -25,9 +25,9 @@ export default function AssignCreatorModal({
   name,
   id,
   refetch,
+  selectedValues,
+  setSelectedValues,
 }: any) {
-  const [selectedValues, setSelectedValues] = useState([]);
-
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const { isLoading, data } = useQuery({ key: 'get-creator' });
@@ -38,7 +38,7 @@ export default function AssignCreatorModal({
     };
     let endpoint = `employee/${id}`;
     let options = {
-      method: 'PUT' as 'PUT',
+      method: 'PATCH' as 'PATCH',
       headers: {
         'content-type': 'application/json',
       },
@@ -48,7 +48,6 @@ export default function AssignCreatorModal({
     fetchReq(endpoint, options)
       .then((response) => response.json())
       .then((res) => {
-        console.log(res);
         handleClose();
         refetch();
       })
@@ -59,7 +58,6 @@ export default function AssignCreatorModal({
 
   const theme = useTheme();
   const isDarkTheme = theme.palette.mode === 'dark';
-
   return (
     <div>
       <Modal
@@ -88,7 +86,7 @@ export default function AssignCreatorModal({
           >
             <MultiSelect
               multiple={true}
-              creatorNames={data?.data}
+              creatorNames={data?.data?.creators}
               selectedValues={selectedValues}
               setSelectedValues={setSelectedValues}
             />

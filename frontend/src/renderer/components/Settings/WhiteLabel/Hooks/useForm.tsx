@@ -12,6 +12,8 @@ const useFormWhiteLabel = () => {
   const { userData } = useContext(AuthContext);
   const [file, setFile] = useState<string | ArrayBuffer | null>('');
   const [agencyLogo, setAgencyLogo] = useState<string | null>(null);
+  const [primaryColor, setPrimaryColor] = useState('');
+  const [secondaryColor, setSecondaryColor] = useState('');
 
   const validationSchema = Yup.object().shape({
     agencyLogo: Yup.mixed(),
@@ -37,26 +39,44 @@ const useFormWhiteLabel = () => {
 
   useEffect(() => {
     if (whiteLables) {
-      setAgencyLogo(whiteLables.agencyLogo);
-      setValue('agencyName', whiteLables.agencyName);
-      setValue('email', whiteLables?.email);
-      setValue('primaryColor', whiteLables.primaryColor);
-      setValue('secondaryColor', whiteLables.secondaryColor);
-      setValue('websiteUrl', whiteLables.websiteUrl);
-      setValue('phone', whiteLables.phone);
-      setValue('agencyLogo', whiteLables.agencyLogo);
+      setAgencyLogo(whiteLables?.agencyLogo);
+      setValue('agencyName', whiteLables?.agencyName);
+      setValue('email', whiteLables?.agencyDetails && whiteLables?.agencyDetails[0]?.email);
+      // setValue('primaryColor', whiteLables.primaryColor);
+      // setValue('secondaryColor', whiteLables.secondaryColor);
+      setPrimaryColor(whiteLables?.primaryColor)
+      setSecondaryColor(whiteLables?.secondaryColor)
+      setValue('websiteUrl', whiteLables?.websiteUrl);
+      setValue('phone', whiteLables?.phone);
+      setValue('agencyLogo', whiteLables?.agencyLogo);
     }
   }, [whiteLables]);
 
   const onSubmit = (data: any) => {
     const formdataConvert = new FormData();
-    formdataConvert.append('agencyLogo', data.agencyLogo);
-    formdataConvert.append('agencyName', data.agencyName);
-    formdataConvert.append('email', data.email);
-    formdataConvert.append('primaryColor', data.primaryColor);
-    formdataConvert.append('secondaryColor', data.secondaryColor);
-    formdataConvert.append('websiteUrl', data.websiteUrl);
-    formdataConvert.append('phone', data.phone);
+    {
+      data.agencyLogo && formdataConvert.append('agencyLogo', data.agencyLogo);
+    }
+    {
+      data.agencyName && formdataConvert.append('agencyName', data.agencyName);
+    }
+    {
+      data.email && formdataConvert.append('email', data.email);
+    }
+    {
+      primaryColor &&
+        formdataConvert.append('primaryColor', primaryColor);
+    }
+    {
+      secondaryColor &&
+        formdataConvert.append('secondaryColor',secondaryColor);
+    }
+    {
+      data.websiteUrl && formdataConvert.append('websiteUrl', data.websiteUrl);
+    }
+    {
+      data.phone && formdataConvert.append('phone', data.phone);
+    }
     let endpoint = `agency/update-agency/${userData?.agency?._id} `;
     let options = {
       method: 'PATCH' as 'PATCH',
@@ -85,6 +105,10 @@ const useFormWhiteLabel = () => {
     agencyLogo,
     errors,
     handleSubmit: handleSubmit(onSubmit),
+    setPrimaryColor,
+    primaryColor,
+    setSecondaryColor,
+    secondaryColor
   };
 };
 

@@ -22,7 +22,6 @@ import ShareForShare from './pages/ShareForShare';
 import DiscoverCreators from './pages/ShareForShare/DiscoverCreators';
 import InviteLink from './pages/ShareForShare/InviteLink';
 import CreatePost from './pages/ShareForShare/InviteLink/CreatePost';
-import useAuth from './hooks/useAuth';
 import Requests from './pages/ShareForShare/Requests';
 import TrialLinks from './pages/Growth/TrialLink';
 import Register from './pages/Auth/register';
@@ -43,6 +42,7 @@ import ChatMessage from './pages/ChatScreen';
 import ContentHub from './pages/ContentHub';
 import Browser from './pages/Browser';
 import { useLocation } from 'react-router-dom';
+import Timekeeping from './pages/Accounting/Timekeeping';
 
 const ROUTES = [
   {
@@ -99,6 +99,11 @@ const ROUTES = [
     path: '/employees-manage-employees',
     element: <ManageEmployees />,
     pathName: 'Manage Employees',
+  },
+  {
+    path: 'timekeeping',
+    element: <Timekeeping />,
+    pathName: 'Timekeeping',
   },
   {
     path: 'analytics',
@@ -267,10 +272,7 @@ function AppRoutes() {
     <Routes>
       {isLogin ? (
         <>
-          <Route
-            path="/"
-            element={<Navigate to="/manager-suite/notifications" />}
-          />
+          <Route path="/" element={<Navigate to="/home" />} />
           {ROUTES.map(({ path, element, nestedRoutes }) =>
             nestedRoutes ? (
               <Route key={path} path={path} element={element}>

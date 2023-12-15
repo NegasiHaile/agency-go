@@ -12,6 +12,8 @@ export const useFormEmployee = (
   selectedEmployee: ISelectedEmployee
 ) => {
   const [selectedValues, setSelectedValues] = useState<any>([]);
+  const [agencyId, setAgencyId] = useState<string>('')
+  const [registrationError, setRegistrationError] = useState<string | boolean>(false);
   const [groupOptions, setGroupOptions] = useState<
     {
       label: string;
@@ -35,7 +37,8 @@ export const useFormEmployee = (
     name: Yup.string().required('Name is required'),
     email: Yup.string().required('Email is required'),
     role: Yup.string().required('Role is required'),
-    agencyId: Yup.string().required('Group is required'),
+    agencyId: Yup.string().required('Agency id is required'),
+    groupId: Yup.string(),
     assignCreator: Yup.array(),
     payRate: Yup.number().required('Pay rate is required'),
     payInterval: Yup.string().required('Pay Interval is required'),
@@ -65,23 +68,25 @@ export const useFormEmployee = (
 
   const onSubmit = (data: any) => {
     if (type === 'add') {
-      addEmployee(data);
+      addEmployee({...data, agencyId});
     } else {
       editEmployee({ ...data, id: selectedEmployee?.id });
-      mutateUpdate(
-        { ...data, id: selectedEmployee?.id },
-        {
-          onSuccess: () => {
-            callback();
-            reset();
-            refetch();
-          },
-        }
-      );
+      // mutateUpdate(
+      //   { ...data, id: selectedEmployee?.id },
+      //   {
+      //     onSuccess: () => {
+      //       callback();
+      //       reset();
+      //       refetch();
+      //     },
+      //   }
+      // );
     }
   };
 
   const addEmployee = (data: any) => {
+    const payload = data.groupId?data:{...data, groupId:null}
+
     const endPoint = 'employee/' + data.agencyId;
     const twilioEndPoint = 'chat/user';
     const options = {
@@ -90,7 +95,7 @@ export const useFormEmployee = (
         'content-type': 'application/json',
       },
       withAuth: true,
-      body: JSON.stringify(data),
+      body: JSON.stringify(payload ),
     };
     const twilioOptions = {
       method: 'POST' as 'POST',
@@ -99,27 +104,30 @@ export const useFormEmployee = (
       },
       withAuth: true,
       body: JSON.stringify({
-        email: data.email,
+        email: payload .email,
       }),
     };
     fetchReq(endPoint, options)
       .then((response) => {
-        response.json();
         callback();
         reset();
         setSelectedValues([]);
+        return response.json();
       })
       .then((_res) => {
         fetchReq(twilioEndPoint, twilioOptions)
           .then((response) => response.json())
-          .catch((err) => console.log(err));
+          .catch((err) => {console.log(err), setRegistrationError(err)});
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err), 
+        setRegistrationError(err?.message)});
+      
   };
   const editEmployee = (data: any) => {
     const endPoint = 'employee/' + data.id;
     const options = {
-      method: 'PUT' as 'PUT',
+      method: 'PATCH' as 'PATCH',
       headers: {
         'content-type': 'application/json',
       },
@@ -127,10 +135,14 @@ export const useFormEmployee = (
       body: JSON.stringify(data),
     };
     fetchReq(endPoint, options)
-      .then((responce) => responce.json())
-      .then((res) => {
-        refetch();
-        setSelectedValues([]);
+      .then((response) => response.json())
+      .then((response) => {
+        if (response.message == 'Employee updated successfully') {
+          callback();
+          refetch();
+          setSelectedValues([]);
+          // setOpenAddEmployee(false)
+        }
       })
       .catch((err) => console.log(err));
   };
@@ -141,9 +153,11 @@ export const useFormEmployee = (
       setValue('email', selectedEmployee?.email);
       setValue('role', selectedEmployee?.role);
       setValue('agencyId', selectedEmployee?.agencyId);
-      setSelectedValues(
-        selectedEmployee?.assignedCreatorsForDropdown.map((val) => val.id)
-      );
+      setValue('payRate', selectedEmployee?.payRate);
+      setValue('commission', selectedEmployee?.commission);
+      setValue('payInterval', selectedEmployee?.payInterval);
+      setValue('shiftSchedular', selectedEmployee?.shiftSchedular);
+      setSelectedValues(selectedEmployee?.assignedCreatorsForDropdown);
     } else {
       setSelectedValues([]);
     }
@@ -159,6 +173,9 @@ export const useFormEmployee = (
     selectedValues,
     setSelectedValues,
     setValue,
+    setAgencyId,
+    registrationError,
+    setRegistrationError
   };
 };
 

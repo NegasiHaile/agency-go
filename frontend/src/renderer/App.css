@@ -20,12 +20,15 @@ body {
   font-family: Arimo, sans-serif;
   color: var(--color-white);
 }
-.css-ekzvno{
+
+.css-ekzvno {
   display: none !important;
 }
-.css-87lnyx{
+
+.css-87lnyx {
   padding: 15px !important;
 }
+
 .App {
   display: flex;
   justify-content: center;
@@ -63,64 +66,102 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+
 .btn {
   color: #fff !important;
 }
 
-.css-ctlopj-MuiButtonBase-root-MuiPickersDay-root-MuiDateRangePickerDay-day{
+.css-ctlopj-MuiButtonBase-root-MuiPickersDay-root-MuiDateRangePickerDay-day {
   color: #fff !important;
 }
-.css-4pax7l-MuiPickersLayout-root{
+
+.css-4pax7l-MuiPickersLayout-root {
   background-color: #000000 !important;
 }
-.css-rhmlg1-MuiTypography-root-MuiDayCalendar-weekDayLabel{
-  color: #fff !important;
-}
-.css-bq0ecf-MuiButtonBase-root-MuiChip-root{
-  color: #fff!important;
-  background-color:#272626 !important;
-}
-.css-1hbyad5-MuiTypography-root{
+
+.css-rhmlg1-MuiTypography-root-MuiDayCalendar-weekDayLabel {
   color: #fff !important;
 }
 
-.css-124wamg-MuiTypography-root-MuiPickersToolbarText-root.Mui-selected{
+.css-bq0ecf-MuiButtonBase-root-MuiChip-root {
+  color: #fff !important;
+  background-color: #272626 !important;
+}
+
+.css-1hbyad5-MuiTypography-root {
   color: #fff !important;
 }
-.css-124wamg-MuiTypography-root-MuiPickersToolbarText-root{
+
+.css-124wamg-MuiTypography-root-MuiPickersToolbarText-root.Mui-selected {
   color: #fff !important;
 }
-.css-1vooibu-MuiSvgIcon-root{
+
+.css-124wamg-MuiTypography-root-MuiPickersToolbarText-root {
+  color: #fff !important;
+}
+
+.css-1vooibu-MuiSvgIcon-root {
   color: #fff !important;
 
 }
-.css-8mbau-MuiButtonBase-root-MuiPickersDay-root-MuiDateRangePickerDay-day:not(.Mui-selected){
+
+.css-8mbau-MuiButtonBase-root-MuiPickersDay-root-MuiDateRangePickerDay-day:not(.Mui-selected) {
   border: 1px solid rgb(255, 255, 255);
 }
-.css-1aj2fss-MuiTypography-root-MuiPickersToolbarText-root.Mui-selected{
+
+.css-1aj2fss-MuiTypography-root-MuiPickersToolbarText-root.Mui-selected {
   color: #fff !important;
 
 }
-.css-1aj2fss-MuiTypography-root-MuiPickersToolbarText-root{
+
+.css-1aj2fss-MuiTypography-root-MuiPickersToolbarText-root {
   color: #fff !important;
 
 }
 
-.css-1jmgv9c{
-background-color: #0e0d0d !important;
+.css-1jmgv9c {
+  background-color: #0e0d0d !important;
 }
 
-.css-tul77i{
+.css-tul77i {
   background-color: #060606 !important;
 }
 
 .css-28xkwt {
- top: 150px !important;
+  top: 150px !important;
 
- 
+
 }
+
 .css-1sefixa {
   top: 100px !important;
 
 
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.example::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.example {
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
+}
+
+.noSpinner {
+  width: 60px;
+}
+
+.noSpinner input[type='number']::-webkit-inner-spin-button,
+.noSpinner input[type='number']::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.noSpinner input[type='number'] {
+  -moz-appearance: textfield;
 }

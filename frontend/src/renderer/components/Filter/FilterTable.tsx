@@ -19,42 +19,61 @@ interface $Props {
   tableHeaders: string[];
   children: ReactNode | ReactNode[];
   isEmptyContent?: boolean;
+  pagination?: any;
 }
 
 export default function FilterTable({
   isEmptyContent,
   tableHeaders,
+  pagination,
   children,
 }: $Props) {
-
   const theme = useTheme();
   const isDarkTheme = theme.palette.mode === 'dark';
   return (
-    <Box sx={{  width:'80%',padding:'10px', overflow: 'auto' }}>
+    <Box
+      sx={{
+        width: '100%',
+        padding: '10px',
+        overflow: 'auto',
+      }}
+    >
       {!isEmptyContent ? (
-        <TableContainer
-          sx={{
-            border: `1px solid ${theme.palette.primary.contrastText}`,
-            borderRadius: '12px',
-            width:'100%'
-          }}
-        >
-          <Table aria-label="manage creators table">
-            <TableHead
-              sx={{
-                background: isDarkTheme ? '#292929' : '#EAF1FF',
-                color: '#fff',
-              }}
+        <>
+          <TableContainer
+            sx={{
+              border: `1px solid ${theme.palette.primary.contrastText}`,
+              borderRadius: '12px',
+              width: '100%',
+              height: '100%',
+            }}
+          >
+            <Table aria-label="manage creators table">
+              <TableHead
+                sx={{
+                  background: isDarkTheme ? '#292929' : '#EAF1FF',
+                  color: '#fff',
+                }}
+              >
+                <TableRow>
+                  {tableHeaders.map((header) => (
+                    <TableCell key={header}>{header}</TableCell>
+                  ))}
+                </TableRow>
+              </TableHead>
+              <TableBody>{children}</TableBody>
+            </Table>
+          </TableContainer>
+          {pagination && (
+            <Stack
+              display={'flex'}
+              justifyContent={'center'}
+              alignItems={'center'}
             >
-              <TableRow>
-                {tableHeaders.map((header) => (
-                  <TableCell key={header}>{header}</TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>{children}</TableBody>
-          </Table>
-        </TableContainer>
+              {pagination}
+            </Stack>
+          )}
+        </>
       ) : (
         <Box
           sx={{
@@ -68,7 +87,9 @@ export default function FilterTable({
             direction="row"
             justifyContent="space-between"
             sx={{
-              backgroundColor: isDarkTheme? '#292929':theme.palette.primary.contrastText,
+              backgroundColor: isDarkTheme
+                ? '#292929'
+                : theme.palette.primary.contrastText,
             }}
             className={styles.campaign}
             paddingTop="30px"

@@ -2,12 +2,12 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
-import { Divider, Switch, TextField, styled } from '@mui/material';
-import { InputWithLabel } from 'renderer/components/Settings/Wallet/Common/ModalComponents';
-import { useState } from 'react';
+import { Divider, Snackbar } from '@mui/material';
 import styles from '../styles.module.css';
-import { tr } from 'date-fns/locale';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import { useState } from 'react';
+import { updatePresignedUrl } from 'services/content';
+
 const style = {
   position: 'absolute' as 'absolute',
   top: '50%',
@@ -21,22 +21,28 @@ const style = {
   p: 2,
 };
 
-export default function RegenerateModal({ open, dialogOpenClose, link }: any) {
-
+export default function RegenerateModal({
+  open,
+  dialogOpenClose,
+  link,
+  updateLink,
+}: any) {
+  const [openCliboardMsg, setOpenCliboardMsg] = useState(false);
 
   const handleClose = () => {
     dialogOpenClose(false);
   };
-
-
   const onClick = () => {
-    window.electron.ipcRenderer.sendMessage('copy-to-clipboard', {
-      link: link,
-    });
-  
-
-    dialogOpenClose(false);
+    // window.electron.copyToClipboard(link);
+    updateLink();
   };
+  function truncateString(str: string, maxLength: number) {
+    if (str.length > maxLength) {
+      return str.substring(0, maxLength - 3) + '...';
+    }
+    return str;
+  }
+
   return (
     <Modal
       sx={{ backdropFilter: 'blur(4px)' }}
@@ -54,7 +60,7 @@ export default function RegenerateModal({ open, dialogOpenClose, link }: any) {
             margin: '10px 0px',
           }}
         >
-          <Typography> Regenerate Link</Typography>
+          <Typography> Regenerate Link </Typography>
           <Typography onClick={handleClose} sx={{ cursor: 'pointer' }}>
             X
           </Typography>
@@ -74,14 +80,22 @@ export default function RegenerateModal({ open, dialogOpenClose, link }: any) {
               style={{ flex: 1, marginRight: '-31px' }}
               type="text"
               placeholder=""
-             
               className={styles.inputWrap}
               readonly={'true'}
-              value={link}
+              value={truncateString(link, 30)}
+            />
+            <Snackbar
+              open={openCliboardMsg}
+              onClose={() => setOpenCliboardMsg(false)}
+              autoHideDuration={1000}
+              message="Copied to clipboard"
             />
             <ContentCopyIcon
               sx={{ marginRight: '15px', cursor: 'pointer' }}
-              onClick={onClick}
+              onClick={() => {
+                navigator.clipboard.writeText(link);
+                setOpenCliboardMsg(true);
+              }}
             />
           </Box>
         </Box>

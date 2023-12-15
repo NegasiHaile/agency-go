@@ -93,7 +93,7 @@ export default function AgencyTreeData({
   );
 
   return (
-    <Box sx={{ minHeight: 110, flexGrow: 1, width: 400 }}>
+    <Box sx={{ flexGrow: 1, width: 400 }}>
       <TreeView
         aria-label="rich object"
         defaultCollapseIcon={<ExpandMoreIcon />}
