@@ -1,0 +1,24 @@
+.wrapper {
+  border-radius: 16px;
+  margin-right: 16px;
+  margin-left: 16px;
+  display: flex;
+  gap: 16px;
+  flex-direction: column;
+  overflow-y: hidden;
+  padding: 16px;
+  /* background-color: red; */
+  margin-bottom: 100px;
+}
+.darkTheme {
+  
+  background-color: #0C0C0C; /* Dark mode background color */
+ 
+  
+}
+
+.lightTheme {
+
+  background-color: #EAF1FF;
+  
+}

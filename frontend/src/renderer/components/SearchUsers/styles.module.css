@@ -1,0 +1,17 @@
+.search {
+  padding: 28px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.filter {
+  height: 75vh;
+}
+
+.aside {
+  border-right: 1px solid;
+  height: 100%;
+  border-radius: 16px;
+ 
+}

@@ -1,0 +1,29 @@
+.billingHeader{
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    padding-bottom: 32px;
+}
+
+.buttonWrapper{
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.balanceText{
+    font-size: 53px;
+    font-weight: 600;
+    margin-bottom: 32px;
+}
+
+.headingText{
+    font-weight: 600;
+    margin-bottom: -4px;
+}
+
+.withdrawalTableWrapper{
+    margin-top: 32px;
+    margin-bottom: 32px;
+}

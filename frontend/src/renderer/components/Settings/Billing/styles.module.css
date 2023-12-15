@@ -1,0 +1,152 @@
+.profilePicImage {
+  width: 100px;
+  height: 100px;
+  border-radius: 8px;
+}
+.profilePicWrap {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+}
+
+.changePictureTextWrapper {
+  margin-left: 8px;
+}
+
+.changePictureText {
+  color: #37de8f;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.changePictureTextWrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.changePictureIcon {
+  width: 16px;
+  height: 16px;
+  border: 1px solid #37de8f;
+  padding: px;
+  border-radius: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  margin-left: 4px;
+}
+
+.nameWrap {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  align-items: center;
+  padding-bottom: 32px;
+  border-bottom: 1px solid #292929;
+}
+.profileNameText {
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.inputWrap {
+  padding: 12px;
+  border-radius: 3px;
+  border: 1px solid #292929;
+  color: white;
+  min-width: 264px;
+  width: 264px;
+  outline: none;
+  background-color: transparent;
+}
+
+.inputWrap:focus {
+  outline: none;
+}
+.prefernceWrapper {
+  margin-top: 32px;
+}
+
+.inputListWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-left: 30px;
+  margin-right: 30px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.buttonWrapper {
+  width: 290px;
+  padding-top: 32px;
+}
+
+.optionlist {
+  outline: none;
+  background: #292929;
+  color: white;
+  width: 305px;
+  height: 45px;
+  padding: 10px;
+}
+.billingheader {
+  display: flex;
+  margin-top: -20px;
+}
+
+.subscriptionheader {
+  margin-right: 8px;
+}
+
+.monthlysubscription {
+  margin-top: -10px;
+}
+
+.card {
+  background-color: #292929;
+  height: 190px;
+  border-radius: 4px;
+  margin-top: 40px;
+  padding: 32px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.monthlysubscriptioncard {
+  padding: 5px;
+  margin-left: 10px;
+}
+
+.paidplancard {
+  font-size: 70px;
+  margin-bottom: -15px;
+  margin-left: -6px;
+}
+.servicecard {
+  display: flex;
+}
+.servicetype {
+  margin-right: 30px;
+}
+
+.vipcharge {
+  margin-top: 10px;
+}
+
+.iconalign {
+  margin-top: 16px;
+  margin-right: 4px;
+  fill: grey;
+}
+
+.permonth {
+  font-size: 20px;
+}
+.buttonWrapper {
+  display: flex;
+  justify-content: flex-end;
+}

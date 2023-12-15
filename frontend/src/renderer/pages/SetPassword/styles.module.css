@@ -1,0 +1,42 @@
+.resetpass {
+  display: flex;
+  width: 600px;
+  margin: auto;
+  flex-direction: column;
+  margin-top: 50px;
+}
+
+.heading {
+  text-align: center;
+}
+
+.button {
+  width: 100%;
+  display: flex !important;
+  justify-content: center !important;
+  margin: auto !important;
+  color: #fff !important;
+  text-transform: capitalize
+}
+
+.links {
+  display: flex;
+  justify-content: center;
+  position: fixed;
+  bottom: 0px;
+  width: 100%;
+  padding-bottom: 20px
+}
+
+.links a {
+  text-decoration: none;
+  color: lightgray;
+  margin: 0px 10px;
+  font-size: 18px;
+}
+
+.header {
+  display: flex;
+  margin: 0px 20px;
+  padding: 20px
+}

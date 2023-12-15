@@ -1,0 +1,32 @@
+.modalHeader{
+    padding: 32px 32px 24px 32px;
+    background: #292929;
+    font-size: 27px;
+    font-weight: 700;
+}
+.innerWrapper{
+    width: 522px;
+}
+
+.modalBody{
+    background: #4B4B4B;
+    padding: 0px 77px;
+    padding-top: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    overflow-y: scroll;
+    height: 400px;
+}
+
+.labelText{
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+.inputListWrapper{
+display: flex;
+gap: 16px;
+flex-direction: column;
+margin-bottom: 16px;
+}

@@ -1,0 +1,30 @@
+.wrapper {
+  border: 1px solid var(--color-sub-background-border);
+  border-radius: 16px;
+  height: 88vh;
+  margin-right: 16px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: hidden;
+}
+
+.search {
+  padding: 32px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.filter {
+  height: 75vh;
+}
+
+.modalHeader {
+  padding: 32px 32px 24px 32px;
+  background: #292929;
+  font-size: 27px;
+  font-weight: 700;
+}
+.innerWrapper {
+  width: 522px;
+}

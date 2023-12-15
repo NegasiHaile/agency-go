@@ -1,0 +1,13 @@
+.dashboardWrapper {
+  display: flex;
+  flex-grow: 1;
+}
+
+.secondChild {
+  display: grid;
+
+  width: 100%;
+}
+.darkTheme {
+  background-color: #0f0f0f; /* Dark mode background color */
+}

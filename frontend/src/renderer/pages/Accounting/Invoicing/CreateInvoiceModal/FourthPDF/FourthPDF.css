@@ -1,0 +1,99 @@
+.main-div{
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+overflow-y: auto;
+scroll-behavior: smooth;
+height: 100%;
+align-items: center;
+    margin: 0 auto;
+}
+
+.istbox{
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+}
+.Juliana{
+    margin-left: 39px;
+    border-bottom-left-radius: 40%;
+    border-bottom-right-radius: 40%;
+    width: 178px;
+    height: 235px;
+    background-color: #ffe3fe;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+}
+.invoicee{
+    display: flex;
+justify-content: center;
+align-items: center;
+}
+
+
+
+.invoice_box{
+    width: 39px;
+height: 36px;
+background-color: #ffe3fe;
+
+}
+.Juliana h1{
+font-size: 46px;
+color: #df287b
+}
+.invoicee h1{
+font-size: 46px;
+color: #df287b
+}
+.address{
+line-height: 8px;
+}
+.invoice_date_number{
+line-height: 8px;
+}
+
+/* 2nd box */
+.table_heading{
+border-radius: 9px;
+padding: 15px 41px;
+height: 40px;
+width: 75%;
+display: flex;
+justify-content: space-between;
+align-items: center;
+background-color:#df287b ;
+}
+.sndbox{
+margin-top: 20px;
+width: 100%;
+display: flex;
+justify-content: center;
+align-items: center;
+flex-direction: column;
+}
+.table_list {
+border-radius: 9px;
+padding: 15px 41px;
+height: 40px;
+width: 75%;
+display: flex;
+justify-content: space-between;
+align-items: center;
+border-bottom: 2px dashed wheat;
+
+}
+
+.right{
+    justify-content: end;
+    display: flex;
+    width: 36%;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.Helene{
+    line-height: 4px;
+}

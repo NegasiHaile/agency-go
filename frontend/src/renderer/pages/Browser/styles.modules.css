@@ -1,0 +1,22 @@
+.wrapper {
+  
+  
+  display: flex;
+  gap: 16px;
+  flex-direction: column;
+  overflow-y: hidden;
+  padding: 16px;
+  /* background-color: red; */
+}
+.darkTheme {
+  
+  background-color: #292929; /* Dark mode background color */
+ 
+  
+}
+
+.lightTheme {
+
+  background-color: #EAF1FF;
+  
+}

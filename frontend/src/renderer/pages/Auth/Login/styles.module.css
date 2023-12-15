@@ -1,0 +1,87 @@
+.loginWrap {
+  max-width: 424px;
+  height: 573.59px;
+  margin: 0 auto;
+  margin-top:63px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #292929;
+  padding: 32px;
+  border-radius: 8px;
+ 
+}
+
+.login {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  
+}
+
+.logo {
+  width: 180px;
+  height: auto;
+}
+
+.introHeader {
+  font-size: 22px;
+  font-style: normal;
+  font-weight: 700;
+  margin-top: 24px;
+  
+}
+
+.introDescription {
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 19.2px;
+  margin: 0;
+  margin-bottom: 32px;
+}
+
+.loginBtn {
+  color: var(--color-white) !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  width: 100% !important;
+  padding: 10px auto;
+  margin-inline: auto;
+  display: block !important;
+  margin-top: 24px !important;
+}
+
+.forgotPassword {
+  color: var(--color-primary);
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  margin: 0;
+  margin-top: 24px !important;
+}
+
+.createNewContainer {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.createNewText {
+  font-size: 14px;
+  font-weight: 400;
+  margin: 0;
+  line-height: 16.8px;
+}
+
+.createNewTextLink {
+  font-size: 14px;
+  font-weight: 700;
+  margin: 0;
+  line-height: 16.8px;
+  color: var(--color-primary) !important;
+  cursor: pointer;
+}

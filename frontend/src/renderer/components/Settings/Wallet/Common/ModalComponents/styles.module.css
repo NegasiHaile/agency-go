@@ -1,0 +1,64 @@
+.inputLabelWrapper {
+  width: 100%;
+}
+.labelText {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.inputCss {
+  border-radius: 3px;
+  border: 1px solid #aaa;
+ 
+  padding: 12px;
+  width: 100%;
+ 
+  margin-top: 2px;
+  box-sizing: border-box;
+}
+
+.selectCss {
+  border-radius: 3px;
+  border: 1px solid #aaa;
+ 
+  padding: 12px;
+  width: 100%;
+ 
+  margin-top: 2px;
+}
+
+.modalFooter {
+  display: flex;
+  padding: 24px 32px 32px 32px;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: flex-end;
+  gap: 10px;
+  align-self: stretch;
+  
+}
+
+.addButtonCss {
+  display: flex;
+  padding: 8px 12px;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 3px;
+  background: #04a1ff;
+  border: 1px solid #04a1ff;
+  color: white;
+  cursor: pointer;
+}
+
+.cancelButtonCss {
+  display: flex;
+  padding: 8px 12px;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 3px;
+  background: transparent;
+  border: 1px solid;
+  
+  cursor: pointer;
+}

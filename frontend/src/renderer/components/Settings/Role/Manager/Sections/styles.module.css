@@ -1,0 +1,42 @@
+.permissionWrapperCss{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.childBox:first-child{
+    border-top: 1px solid #292929;
+}
+
+.sectionWrapperCss{
+    border: 1px solid #292929;
+    border-radius: 12px;
+    margin-bottom: 32px;
+}
+
+
+.cardWrapper{
+    border: 1px solid #292929;
+   border-radius: 12px;
+    margin-bottom: 32px;
+    
+    
+}
+
+.cardHeader{
+    background: #292929;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 24px;
+    border-top-right-radius: 12px;
+    border-top-left-radius: 12px;
+
+}
+
+.cardHeaderText{
+    font-size: 14px;
+    color: white;
+    font-weight: 500;
+}

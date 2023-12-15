@@ -1,0 +1,72 @@
+.wrapper {
+  padding-top: 20px;
+  padding-bottom: 20px;
+  padding-left: 28px;
+}
+
+.innerWrapper {
+  display: grid;
+  grid-template-columns: 55px 1fr 40px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.dateBoxItem {
+  padding: 4px 8px 20px 8px;
+  
+  font-size: 20px;
+}
+
+.dateBoxItemsWrapper {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  align-items: center;
+  width: 100%;
+}
+
+.avatarText {
+  font-size: 12px;
+}
+
+.leftSideWrapper {
+  display: flex;
+  flex-direction: column;
+  
+}
+.timeBoxItem {
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid green;
+  font-size: 14px;
+  color: green;
+  width: 73px;
+  font-weight: 800;
+}
+.deactiveItemBox {
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid red;
+  color: red;
+  font-size: 12px;
+  width: 73px;
+}
+.slotWrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.timeBoxParentWrapper {
+  display: grid;
+  grid-template-columns: 48px 1fr;
+  align-items: center;
+  margin-bottom: 16px;
+  gap: 8px;
+}
+.timeBoxItemsOuterWrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+

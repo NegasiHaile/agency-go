@@ -1,0 +1,25 @@
+.notificationWrapper{
+padding: 32px;
+border-bottom: 1px solid rgba(255, 255, 255, 0.20);
+}
+.notificationWrapper:first-child{
+    margin-top: 90px;
+}
+.notificationWrapper:hover{
+    background:  rgba(255, 255, 255, 0.20);
+}
+.subHeadingWrapper{
+    color: #AAA;
+    font-size: 14px;
+    display: flex;
+    flex-direction: row;
+}
+
+.subHeadingDateText{
+    margin-left: 16px;
+}
+
+.headingWrapper{
+    margin-top: 16px;
+    font-size: 18px;
+}

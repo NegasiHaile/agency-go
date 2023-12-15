@@ -1,0 +1,126 @@
+/*
+ * @NOTE: Prepend a `~` to css file paths that are in your node_modules
+ *        See https://github.com/webpack-contrib/sass-loader#imports
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap');
+
+body {
+  position: relative;
+  background: #0f0f0f;
+  height: 100%;
+}
+
+html {
+  min-height: 100vh;
+}
+
+html,
+body {
+  font-family: Arimo, sans-serif;
+  color: var(--color-white);
+}
+.css-ekzvno{
+  display: none !important;
+}
+.css-87lnyx{
+  padding: 15px !important;
+}
+.App {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.App a {
+  font-size: 20px;
+  color: var(--color-white);
+}
+
+.main {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #aaaaaa;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #555;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+.btn {
+  color: #fff !important;
+}
+
+.css-ctlopj-MuiButtonBase-root-MuiPickersDay-root-MuiDateRangePickerDay-day{
+  color: #fff !important;
+}
+.css-4pax7l-MuiPickersLayout-root{
+  background-color: #000000 !important;
+}
+.css-rhmlg1-MuiTypography-root-MuiDayCalendar-weekDayLabel{
+  color: #fff !important;
+}
+.css-bq0ecf-MuiButtonBase-root-MuiChip-root{
+  color: #fff!important;
+  background-color:#272626 !important;
+}
+.css-1hbyad5-MuiTypography-root{
+  color: #fff !important;
+}
+
+.css-124wamg-MuiTypography-root-MuiPickersToolbarText-root.Mui-selected{
+  color: #fff !important;
+}
+.css-124wamg-MuiTypography-root-MuiPickersToolbarText-root{
+  color: #fff !important;
+}
+.css-1vooibu-MuiSvgIcon-root{
+  color: #fff !important;
+
+}
+.css-8mbau-MuiButtonBase-root-MuiPickersDay-root-MuiDateRangePickerDay-day:not(.Mui-selected){
+  border: 1px solid rgb(255, 255, 255);
+}
+.css-1aj2fss-MuiTypography-root-MuiPickersToolbarText-root.Mui-selected{
+  color: #fff !important;
+
+}
+.css-1aj2fss-MuiTypography-root-MuiPickersToolbarText-root{
+  color: #fff !important;
+
+}
+
+.css-1jmgv9c{
+background-color: #0e0d0d !important;
+}
+
+.css-tul77i{
+  background-color: #060606 !important;
+}
+
+.css-28xkwt {
+ top: 150px !important;
+
+ 
+}
+.css-1sefixa {
+  top: 100px !important;
+
+
+}

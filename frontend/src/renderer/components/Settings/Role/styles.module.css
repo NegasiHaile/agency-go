@@ -1,0 +1,66 @@
+.headingText{
+    font-size: 30px;
+    font-weight: 700;
+}
+
+.titleWrapper{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: row;
+    margin-bottom: 32px;
+}
+
+.headerWrapper{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.buttonWrapper{
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+}
+.optionWrapper {
+    display: flex;
+    padding: 16px 0px;
+    flex-direction: column;
+    align-items: flex-start;
+    border: 8px;
+  }
+  
+  .optionItem {
+    padding: 16px 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    color: #aaa;
+    font-size: 13px;
+    font-weight: 600;
+    width: 100%;
+    cursor: pointer;
+    text-decoration: none;
+  }
+  
+  .optionItem:last-child {
+    border-bottom: none;
+  }
+
+  .showUserText{
+    color:  #AAAAAA;
+    font-size: 12px;
+  }
+
+  .deactivateTextCss{
+    color:#FF0000;
+    font-weight: 600;
+    font-size: 12px;
+    cursor: pointer;
+  }
+
+  .activateTextCss{
+    font-weight: 600;
+    font-size: 12px;
+    color: #FFFFFF;
+    cursor: pointer;
+  }

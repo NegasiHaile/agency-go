@@ -1,0 +1,14 @@
+.header {
+  background-color: var(--color-secondary);
+  display: flex;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  max-height: 97px;
+}
+
+.headerText {
+  margin: 40px 0px 16px 32px;
+  color: var(--color-white);
+  font-size: 34px;
+  font-weight: 600;
+}

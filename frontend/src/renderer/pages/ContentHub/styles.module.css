@@ -1,0 +1,139 @@
+.wrapper {
+  border: 1px solid var(--color-sub-background-border);
+  border-radius: 16px;
+  max-height: 90vh;
+  margin-right: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.search {
+  padding: 28px;
+  
+}
+.inputWrap {
+  padding: 12px;
+  border-radius: 3px;
+  border: 1px solid #292929;
+  color: white;
+  min-width: 264px;
+  width: 91%;
+  outline: none;
+  background-color: transparent;
+}
+.selectWrap {
+  padding: 12px;
+  border-radius: 3px;
+  border: 1px solid #292929;
+  color: white;
+  min-width: 264px;
+  width: 98%;
+  outline: none;
+  background-color: transparent;
+}
+.tableContainer {
+  /*margin-left: 10px;*/
+  /*margin-right: 20px;*/
+  overflow: hidden;
+}
+.gridheader {
+  background-color: var(--color-secondary);
+}
+.imagegridcontainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  justify-items: left;
+}
+.imageitem {
+  position: relative;
+  width: 300px;
+  height: 300px;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: cover;
+  opacity: 0.5;
+}
+
+.iconbg {
+  background-color: '#002942';
+  height: '40px';
+  width: '40px';
+  border-radius: '50px';
+  padding: '10px';
+}
+
+.deleteIcon {
+  cursor: pointer;
+}
+
+.imageContainer {
+  position: relative;
+}
+.deleteIcon {
+  position: absolute;
+  top: 0;
+  left: 0;
+  cursor: pointer;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 10px;
+  color: white;
+}
+
+.actions {
+  position: absolute;
+  bottom: 15px;
+  right: 10px;
+ 
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  border-radius: 8px;
+  transition: opacity 0.3s ease;
+}
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+   background:  #292929;
+   border-radius: 27px;
+  padding: 13px;
+  color: white;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+.CheckIcon{
+  position: absolute;
+  top: 15px;
+  right: 13px;
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  border-radius: 8px;
+  transition: opacity 0.3s ease;
+  z-index: 1;
+}
+.zoomedImageContainer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8); /* semi-transparent background */
+  display: flex;
+  flex-direction: column; 
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.zoomedImage {
+  max-width: 90%; /* You can adjust the size as needed */
+  max-height: 90%;
+}
+
+.closeIcon {
+  position: absolute;
+  top: 10px;
+  right: 10px; 
+  cursor: pointer;
+}

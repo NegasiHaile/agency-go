@@ -1,0 +1,11 @@
+.search {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.input {
+  /* color: var(--color-white) !important; */
+  border: 1px solid #ffffff33;
+  height: 44px;
+}

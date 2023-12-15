@@ -1,0 +1,10 @@
+.header {
+  /* background-color: var(--color-secondary); */
+  display: flex;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  padding: 28px;
+  position: relative;
+  justify-content: space-between;
+
+}

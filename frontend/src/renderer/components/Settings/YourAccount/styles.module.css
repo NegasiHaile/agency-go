@@ -1,0 +1,84 @@
+.profilePicImage{
+    width: 100px;
+    height: 100px;
+    border-radius: 8px;
+}
+.profilePicWrap{
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+}
+
+.changePictureTextWrapper{
+    margin-left: 8px;
+}
+
+.changePictureText{
+    color:  #37DE8F;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.changePictureTextWrapper{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.changePictureIcon{
+    width: 16px;
+    height: 16px;
+    border: 1px solid #37DE8F;
+    padding: px;
+    border-radius: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    margin-left: 4px;
+}
+
+.nameWrap{
+    margin-top: 20px;
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    align-items:center ;
+    padding-bottom: 32px;
+    border-bottom: 1px solid #292929;
+ 
+}
+.profileNameText{
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.inputWrap{
+padding: 12px;
+border-radius: 3px;
+border: 1px solid  #292929;
+color: white;
+min-width: 264px;
+width: 264px;
+outline: none;
+background-color: transparent;
+}
+
+.inputWrap:focus{
+    outline: none;
+}
+.passwordChangeWrapper{
+    margin-top: 32px;
+}
+
+.inputListWrapper{
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.buttonWrapper{
+    width: 290px;
+    padding-top: 15px;
+    
+}

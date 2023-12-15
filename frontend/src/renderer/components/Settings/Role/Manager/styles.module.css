@@ -1,0 +1,38 @@
+.navWrapper{
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+}
+.homeText{
+text-decoration: underline;
+}
+
+.headingText{
+    font-size: 30px;
+    font-weight: 700;
+}
+
+.titleWrapper{
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-direction: row;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.subHeadingTextCss{
+    font-size: 16px;
+    color: white;
+    margin-top: 4px;
+}
+
+.sectionWrapper{
+height: 500px;
+max-height: 500px;
+overflow: scroll;
+}

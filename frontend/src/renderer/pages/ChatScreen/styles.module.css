@@ -1,0 +1,33 @@
+.card {
+  padding: 15px;
+  border-top: 1px solid var(--color-sub-background-border);
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.card:last-child {
+  border-bottom: 1px solid var(--color-sub-background-border);
+}
+
+.icon {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background-color: var(--color-sub-background-border);
+  border-radius: 4px;
+}
+.conversationButton{
+  border: 1px solid #3a3a3a !important;
+  margin-bottom: 10px !important;
+  width: 93% !important;
+  color: #fff !important;  
+ }
+ .checkboxLabel{
+  color: black !important;
+  display: flex; 
+  align-items: center;
+ }
+ .pageAsideDiv{
+  width: 30% !important;
+ }

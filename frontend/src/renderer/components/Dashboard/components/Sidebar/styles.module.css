@@ -1,0 +1,125 @@
+.sidebar {
+  margin: 0px 8px;
+  min-height: 100vh;
+}
+.brandLogo {
+  border-bottom: 1px solid #04a1ff;
+  padding-bottom: 30px;
+  padding-top: 30px;
+  margin-left: 16px;
+  width: 46px;
+}
+
+.sidebarItem {
+  display: flex;
+  flex-direction: row;
+  padding: 16px 0px;
+  align-items: center;
+}
+.sidebarIcon {
+  margin-bottom: 8px;
+}
+
+.sidebarItemText {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.sidebarNavWrapper {
+  background-color: '#d3d3d3';
+  /* margin-left: 22px; */
+}
+
+.optionWrapper {
+  display: flex;
+  /* padding: 16px 0px; */
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 8px;
+}
+
+.optionItem {
+  padding: 16px 16px;
+
+  color: #aaa;
+  font-size: 13px;
+  font-weight: 600;
+  width: 100%;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.optionItem:last-child {
+  border-bottom: none;
+}
+.sidebarItemWrapperDark {
+ padding: 10px 8px 2px 20px;
+  margin-top: 10px;
+
+  /* margin-bottom: 24px; */
+}
+
+.sidebarItemWrapperDark:last-child {
+  margin-bottom: 0px;
+}
+.sidebarItemWrapperDark:hover {
+  border-radius: 8px;
+  background: #04a1ff;
+}
+.sidebarItemWrapperActiveDark {
+  border-radius: 8px;
+  background: #04a1ff;
+  padding: 10px 8px 2px 20px;
+  margin-top: 10px;
+  /* margin-bottom: 24px; */
+}
+.sidebarItemNav {
+  text-decoration: none;
+}
+
+.sidebarItemWrapperLight {
+ padding: 10px 8px 2px 20px;
+  margin-top: 10px;
+  /* margin-bottom: 24px; */
+}
+
+.sidebarItemWrapperLight:last-child {
+  margin-bottom: 0px;
+}
+.sidebarItemWrapperLight:hover {
+  border-radius: 8px;
+  background: #fff;
+}
+.sidebarItemWrapperActiveLight {
+  border-radius: 8px;
+  background: #fff;
+  padding: 10px 8px 2px 20px;
+  margin-top: 10px;
+  /* margin-bottom: 24px; */
+}
+
+.iconDark {
+  filter: brightness(0) saturate(100%) invert(100%) sepia(100%) saturate(0%)
+    hue-rotate(307deg) brightness(103%) contrast(101%);
+}
+
+.iconLight {
+  filter: brightness(0) saturate(100%) invert(45%) sepia(77%) saturate(1638%)
+    hue-rotate(176deg) brightness(99%) contrast(105%);
+}
+.darkTheme {
+  background-color: #0c0c0c; /* Dark mode background color */
+}
+
+.lightTheme {
+  background-color: #04a1ff;
+  width: '100%';
+  margin: 0;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+.drawer {
+  min-width: 240px; /* Adjust width as needed */
+  flex-shrink: 0;
+}

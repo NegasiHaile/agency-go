@@ -1,0 +1,104 @@
+/* * {
+    box-sizing: border-box !important;
+color: gray !important;
+} */
+
+.main-divv {
+    display: flex;
+    flex-wrap: wrap;
+    
+    width: 100%;
+    /* / justify-content: center; / */
+    align-items: center;
+    height: 100%;
+    overflow-y: auto;
+    margin: 0 auto;
+}
+
+.header-div {
+    background-color: rgb(236, 236, 236);
+
+    width: 80%;
+    margin: 0px auto;
+    color: gray;
+
+    text-align: center;
+}
+
+.header-div {
+    padding: 30px 100px;
+}
+
+
+.d-flex {
+    display: flex;
+    flex-wrap: wrap;
+     
+    width: 92%;
+    margin: 0 auto;
+
+
+}
+
+.justify-content-center {
+    justify-content: center;
+}
+
+.invoice {
+    text-align: center;
+}
+
+.invoice h1 {
+    text-align: center;
+    font-size: 100px;
+    margin: 0px 0px;
+    color: gray;
+    font-weight: lighter;
+
+
+    font-family: 'Caveat', cursive;
+}
+
+.pt-19 {
+    padding-top: -10px;
+}
+
+.new-item {
+    width: 50% !important;
+}
+
+.new-item-sub {
+    width: 25% !important;
+}
+
+.new-item-75 {
+    width: 75% !important;
+}
+
+
+table {
+    margin-top: 20px;
+border-collapse: collapse;
+width: 100%;
+}
+th, td {
+border: 1px solid gray;
+padding: 8px;
+text-align: center;
+}
+td{
+padding: 20px 0px;
+}
+th{
+/* background-color: gray !important; */
+color: #ffff;
+}
+.width-70{
+
+width: 70%;
+}
+
+.width-30{
+
+width: 30%;
+}

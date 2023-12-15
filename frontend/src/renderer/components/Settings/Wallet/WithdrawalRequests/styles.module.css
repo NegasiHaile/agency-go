@@ -1,0 +1,16 @@
+.navWrapper{
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+}
+.homeText{
+text-decoration: underline;
+}
+
+.withdrawalTableWrapper{
+    margin-top: 32px;
+}

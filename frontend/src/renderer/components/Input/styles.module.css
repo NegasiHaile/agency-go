@@ -1,0 +1,30 @@
+.fieldset {
+  all: unset;
+  appearance: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 16px;
+  width: 100%;
+}
+
+.input {
+  color: #fff !important;
+  background: #ffffff33;
+  border: 1px solid #aaaaaa;
+  
+}
+
+.input::placeholder {
+  color: var(--color-white) !important;;
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.error {
+  color: #ff0000;
+  font-size: 12px;
+}

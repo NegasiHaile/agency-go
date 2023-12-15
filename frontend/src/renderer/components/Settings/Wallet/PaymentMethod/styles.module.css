@@ -1,0 +1,85 @@
+.navWrapper{
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+}
+.homeText{
+text-decoration: underline;
+}
+
+.withdrawalTableWrapper{
+    margin-top: 32px;
+}
+.cardListWrapper{
+    padding-top: 32px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 24px;
+    align-items: flex-start;
+}
+
+.card{
+    border-radius: 12px;
+    border: 1px solid #292929;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+.headingText{
+    font-size: 27px;
+    font-weight: 700;
+}
+
+.subHeadingText{
+    font-size: 11px;
+    font-weight: 500;
+    padding-top: 4px;
+    
+}
+.cardHeaderWrapper{
+    padding-bottom: 16px;
+    border-bottom: 1px solid #292929;
+}
+
+.cardBody{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    border-bottom: 1px solid #292929;
+    padding-bottom: 16px ;
+    width: 100%;
+}
+
+.points{
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.cardButton{
+border-radius: 3px;
+background:  #04A1FF;
+padding: 8px 12px;
+flex-direction: column;
+align-items: center;
+font-size: 14px;
+font-style: normal;
+font-weight: 500;
+text-align: center;
+border: 1px solid #04A1FF;
+color: white;
+align-self: stretch;
+width: 100%;
+cursor: pointer;
+}
+
+.cardFooter{
+    width: 100%;
+}

@@ -1,0 +1,58 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 32px;
+  padding-bottom: 16px;
+  padding-right: 24px;
+  padding-left: 16px;
+  align-items: center;
+  
+   position: fixed;
+   z-index: 12;
+   width: 95%;
+}
+
+.end {
+  display: flex;
+  flex-direction: row;
+  
+}
+
+.navIcon {
+  margin-left: 10px;
+  margin-top: 3px;
+  
+}
+
+.navIconLight {
+filter: brightness(0) saturate(100%) invert(0%) sepia(0%) saturate(0%) hue-rotate(130deg) brightness(99%) contrast(103%);
+}
+.navItem {
+  display: flex;
+  flex-direction: row;
+  padding-left: 32px;
+  align-items: center;
+}
+
+.navLink {
+  display: flex;
+  align-items: center;
+}
+
+.navItemText {
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.start {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 32px;
+ 
+ 
+}
+
+.popoverUser {
+  background-color: var(--color-background);
+}

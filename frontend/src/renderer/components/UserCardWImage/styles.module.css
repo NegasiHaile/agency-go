@@ -1,0 +1,43 @@
+.card {
+  padding: 28px;
+  border-top: 1px solid var(--color-sub-background-border);
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+.card:hover {
+  background-color: #04a1ff;
+cursor: pointer;
+  color: #fff;
+}
+
+
+.selected{
+  /* padding: 28px;*/
+  /*border-top: 1px solid var(--color-sub-background-border);*/
+  /*display: flex;*/
+  /*gap: 8px;*/
+  /*align-items: center;*/
+   background-color: #04a1ff;
+
+  color: #fff;
+}
+
+.card:last-child {
+  border-bottom: 1px solid var(--color-sub-background-border);
+}
+
+.icon {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background-color: var(--color-sub-background-border);
+  border-radius: 4px;
+}
+.image{
+  height: 35px;
+  width: 35px;
+  border-radius: 50%;
+  margin-right: 10px;
+}

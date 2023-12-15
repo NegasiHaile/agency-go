@@ -1,0 +1,10 @@
+.modalHeader {
+  padding: 32px 32px 24px 32px;
+  background: #292929;
+  font-size: 27px;
+  font-weight: 700;
+}
+.innerWrapper {
+  width: 522px;
+  height: 100vh;
+}

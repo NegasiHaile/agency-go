@@ -1,0 +1,25 @@
+.wrapper {
+  border: 1px solid var(--color-sub-background-border);
+  border-radius: 16px;
+  height: 88vh;
+  margin-right: 16px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: hidden;
+}
+
+.search {
+  padding: 32px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.filter {
+  height: 75vh;
+}
+
+.aside {
+  border-right: 1px solid var(--color-sub-background-border);
+  height: 100%;
+}
